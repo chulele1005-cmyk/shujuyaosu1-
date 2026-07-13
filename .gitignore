@@ -1,0 +1,32 @@
+# Large data files
+data/raw/
+data/processed/
+data/fused/
+data/privacy_protected/
+data/anhui/
+*.zip
+
+# Virtual env
+venv/
+venv#/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Temp files
+~$*.docx
+~$*.pptx
+.DS_Store
+
+# Outputs (keep figures, exclude model pkl files)
+outputs/*.pkl
+outputs/models/
+
+# IDE
+.idea/
+.vscode/
+
+# Claude
+.claude/
