@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
 <title>区域健康风险预测与智能诊疗决策平台</title>
-<script src="https://cdn.jsdelivr.net/npm/plotly.js@2.32.0/dist/plotly.min.js"></script>
 <script>
 // ======== REAL DATA: OWID China COVID-19 Weekly (2020.01-2030.12) ========
 var chinaData={"dates":["2020-01-05","2020-01-12","2020-01-19","2020-01-26","2020-02-02","2020-02-09","2020-02-16","2020-02-23","2020-03-01","2020-03-08","2020-03-15","2020-03-22","2020-03-29","2020-04-05","2020-04-12","2020-04-19","2020-04-26","2020-05-03","2020-05-10","2020-05-17","2020-05-24","2020-05-31","2020-06-07","2020-06-14","2020-06-21","2020-06-28","2020-07-05","2020-07-12","2020-07-19","2020-07-26","2020-08-02","2020-08-09","2020-08-16","2020-08-23","2020-08-30","2020-09-06","2020-09-13","2020-09-20","2020-09-27","2020-10-04","2020-10-11","2020-10-18","2020-10-25","2020-11-01","2020-11-08","2020-11-15","2020-11-22","2020-11-29","2020-12-06","2020-12-13","2020-12-20","2020-12-27","2021-01-03","2021-01-10","2021-01-17","2021-01-24","2021-01-31","2021-02-07","2021-02-14","2021-02-21","2021-02-28","2021-03-07","2021-03-14","2021-03-21","2021-03-28","2021-04-04","2021-04-11","2021-04-18","2021-04-25","2021-05-02","2021-05-09","2021-05-16","2021-05-23","2021-05-30","2021-06-06","2021-06-13","2021-06-20","2021-06-27","2021-07-04","2021-07-11","2021-07-18","2021-07-25","2021-08-01","2021-08-08","2021-08-15","2021-08-22","2021-08-29","2021-09-05","2021-09-12","2021-09-19","2021-09-26","2021-10-03","2021-10-10","2021-10-17","2021-10-24","2021-10-31","2021-11-07","2021-11-14","2021-11-21","2021-11-28","2021-12-05","2021-12-12","2021-12-19","2021-12-26","2022-01-02","2022-01-09","2022-01-16","2022-01-23","2022-01-30","2022-02-06","2022-02-13","2022-02-20","2022-02-27","2022-03-06","2022-03-13","2022-03-20","2022-03-27","2022-04-03","2022-04-10","2022-04-17","2022-04-24","2022-05-01","2022-05-08","2022-05-15","2022-05-22","2022-05-29","2022-06-05","2022-06-12","2022-06-19","2022-06-26","2022-07-03","2022-07-10","2022-07-17","2022-07-24","2022-07-31","2022-08-07","2022-08-14","2022-08-21","2022-08-28","2022-09-04","2022-09-11","2022-09-18","2022-09-25","2022-10-02","2022-10-09","2022-10-16","2022-10-23","2022-10-30","2022-11-06","2022-11-13","2022-11-20","2022-11-27","2022-12-04","2022-12-11","2022-12-18","2022-12-25","2023-01-01","2023-01-08","2023-01-15","2023-01-22","2023-01-29","2023-02-05","2023-02-12","2023-02-19","2023-02-26","2023-03-05","2023-03-12","2023-03-19","2023-03-26","2023-04-02","2023-04-09","2023-04-16","2023-04-23","2023-04-30","2023-05-07","2023-05-14","2023-05-21","2023-05-28","2023-06-04","2023-06-11","2023-06-18","2023-06-25","2023-07-02","2023-07-09","2023-07-16","2023-07-23","2023-07-30","2023-08-06","2023-08-13","2023-08-20","2023-08-27","2023-09-03","2023-09-10","2023-09-17","2023-09-24","2023-10-01","2023-10-08","2023-10-15","2023-10-22","2023-10-29","2023-11-05","2023-11-12","2023-11-19","2023-11-26","2023-12-03","2023-12-10","2023-12-17","2023-12-24","2023-12-31","2024-01-07","2024-01-14","2024-01-21","2024-01-28","2024-02-04","2024-02-11","2024-02-18","2024-02-25","2024-03-03","2024-03-10","2024-03-17","2024-03-24","2024-03-31","2024-04-07","2024-04-14","2024-04-21","2024-04-28","2024-05-05","2024-05-12","2024-05-19","2024-05-26","2024-06-02","2024-06-09","2024-06-16","2024-06-23","2024-06-30","2024-07-07","2024-07-14","2024-07-21","2024-07-28","2024-08-04","2024-08-11","2024-08-18","2024-08-25","2024-09-01","2024-09-08","2024-09-15","2024-09-22","2024-09-29","2024-10-06","2024-10-13","2024-10-20","2024-10-27","2024-11-03","2024-11-10","2024-11-17","2024-11-24","2024-12-01","2024-12-08","2024-12-15","2024-12-22","2024-12-29","2025-01-05","2025-01-12","2025-01-19","2025-01-26","2025-02-02","2025-02-09","2025-02-16","2025-02-23","2025-03-02","2025-03-09","2025-03-16","2025-03-23","2025-03-30","2025-04-06","2025-04-13","2025-04-20","2025-04-27","2025-05-04","2025-05-11","2025-05-18","2025-05-25","2025-06-01","2025-06-08","2025-06-15","2025-06-22","2025-06-29","2025-07-06","2025-07-13","2025-07-20","2025-07-27","2025-08-03","2025-08-10","2025-08-17","2025-08-24","2025-08-31","2025-09-07","2025-09-14","2025-09-21","2025-09-28","2025-10-05","2025-10-12","2025-10-19","2025-10-26","2025-11-02","2025-11-09","2025-11-16","2025-11-23","2025-11-30","2025-12-07","2025-12-14","2025-12-21","2025-12-28","2026-01-04","2026-01-11","2026-01-18","2026-01-25","2026-02-01","2026-02-08","2026-02-15","2026-02-22","2026-03-01","2026-03-08","2026-03-15","2026-03-22","2026-03-29","2026-04-05","2026-04-12","2026-04-19","2026-04-26","2026-05-03","2026-05-10","2026-05-17"],"cases":[7,1,72,5987,22220,27015,2321,383,206,108,56,314,719,795,556,440,56,12,13,35,55,22,70,172,175,67,22,33,142,230,363,251,143,82,96,74,60,91,176,137,232,341,446,672,582,332,250,682,1218,1537,1221,870,1720,2653,3877,2566,1640,90,50,126,118,77,49,68,158,229,132,118,173,272,397,388,437,412,319,300,402,499,1053,1074,1333,1291,1245,809,721,729,560,477,439,495,515,486,525,428,545,858,737,768,812,925,721,547,866,759,263,74,240,1161,3219,4283,3212,14428,12834,20309,30931,32008,38794,41261,536252,315472,1730390,8348614,21678900,51191246,66058989,72360876,74808963,31092367,13762142,1990588,601344,424689,331501,326680,252841,215888,171756,50476,11262,7756,23356,33154,31223,37923,33724,20660,29490,19388,5046,5161,3348,5360,10292,11864,47267,14617,15025,12139,8086,5498,5801,3133,3948,2805,4726,4499,6196,4123,3304,3436,6447,5376,1807,2305,2235,967,1797,1340,1396,1922,1940,2394,1815,2825,3394,3031,2425,4208,1897,2177,1503,937,561,388,439,367,202,146,654,391,1398,896,678,1792,1510,3833,4215,1966,2675,1051,740,1635,1731,2195,729,293,967,518,1300,1337,2076,804,241,12244,4296,1333,2121,1225,1257,514,1269,1142,11985,17541,17402,15764,15146,14606,11227,12021,15902,9112,11352,14009,16593,19440,17413,19136,17262,19354,17272,23073,26879,27864,24489,26979,23703,21953,20250,18666,22765,22681,25011,24842,25592,18580,24454,24177,23488,28476,21879,20572,20946,23280,18346,18749,21040,21405,21891,19117,17703,21640,19526,16129,25863,17517,16655,15189,14725,10577,10425,10512,8324,8424,7777]};
@@ -133,8 +132,7 @@ window.addEventListener('error',function(e){
     var ld=document.getElementById('loading');
     if(ld){ld.innerHTML='<div style="font-size:32px;margin-bottom:8px">&#9888;&#65039;</div><div>CDN加载失败</div><div style="font-size:12px;color:#999;margin-top:8px">请检查网络连接后刷新重试</div>';}
   }
-},true);
-updateModels(); if(name==='shap')updateSHAP();
+},true); if(name==='shap')updateSHAP();
   if(name==='trend')updateTrend(); if(name==='anhui')updateAnhui();
   if(name==='resource')updateResource();
   attachClicks();
@@ -147,21 +145,7 @@ function updateModels(){
   Plotly.newPlot('chart-auc',[{x:m,y:a,type:'bar',marker:{color:['#2ecc71','#27ae60','#3498db','#95a5a6']},text:['0.828','0.851','0.801','1.000'],textposition:'outside'}],{title:'AUC-ROC 对比',yaxis:{range:[0.7,1.05]},shapes:[{type:'line',x0:-0.5,x1:3.5,y0:0.85,y1:0.85,line:{dash:'dash',color:'orange'}}],annotations:[{x:2.5,y:0.86,text:'指南: 0.85',showarrow:false,font:{color:'orange'}}]},{responsive:true});
   Plotly.newPlot('chart-f1',[{x:m,y:f,type:'bar',marker:{color:['#3498db','#2980b9','#2ecc71','#95a5a6']},text:['0.253','0.166','0.724','1.000'],textposition:'outside'}],{title:'F1 Score 对比',margin:{t:40,b:40,l:50,r:20}},{responsive:true});
 }
-// Hide loading when ready
-window.addEventListener('load',function(){
-  setTimeout(function(){
-    var ld=document.getElementById('loading');
-    if(ld)ld.style.display='none';
-  },1500);
-});
-// Error handling for Plotly CDN failure
-window.addEventListener('error',function(e){
-  if(e.target&&e.target.tagName==='SCRIPT'){
-    var ld=document.getElementById('loading');
-    if(ld){ld.innerHTML='<div style="font-size:32px;margin-bottom:8px">&#9888;&#65039;</div><div>CDN加载失败</div><div style="font-size:12px;color:#999;margin-top:8px">请检查网络连接后刷新重试</div>';}
-  }
-},true);
-updateModels();
+// Charts initialized after Plotly CDN loads (see dynamic loader below)
 
 // ==================== Tab 2: SHAP ====================
 var shapData={
@@ -174,7 +158,6 @@ function updateSHAP(){
   Plotly.newPlot('chart-shap',[{y:d.features.slice().reverse(),x:d.values.slice().reverse(),type:'bar',orientation:'h',marker:{color:d.values.slice().reverse(),colorscale:'Reds'}}],{title:'SHAP 特征重要性 — 风险因素排名',xaxis:{title:'SHAP 重要性'},height:480},{responsive:true});
   Plotly.newPlot('chart-gauge',[{type:'indicator',mode:'gauge+number+delta',value:d.auc,number:{suffix:' AUC'},delta:{reference:0.85},title:{text:d.name},gauge:{axis:{range:[0.5,1.0]},bar:{color:'#27ae60'},steps:[{range:[0.5,0.7],color:'#e74c3c'},{range:[0.7,0.8],color:'#f39c12'},{range:[0.8,0.85],color:'#2ecc71'},{range:[0.85,1.0],color:'#27ae60'}],threshold:{line:{color:'orange',width:2},value:0.85}}}],{title:'模型 AUC 仪表盘',height:480},{responsive:true});
 }
-updateSHAP();
 
 // ==================== Tab 3: Trend (REAL OWID China Data) ====================
 function updateTrend(){
@@ -219,7 +202,6 @@ function updateTrend(){
   var tr3={x:dates,y:res,name:'残差',line:{color:'#e74c3c',width:0.5}};
   Plotly.newPlot('chart-decomp',[tr1,tr2,tr3],{title:'趋势分解 — 原始 + 趋势(12周MA) + 残差',grid:{rows:3,columns:1,pattern:'independent',roworder:'top to bottom',ygap:0.12},xaxis:{},yaxis:{title:'原始值(例)'},xaxis2:{matches:'x'},yaxis2:{title:'趋势(MA)'},xaxis3:{matches:'x'},yaxis3:{title:'残差'},height:h},{responsive:true});
 }
-updateTrend();
 
 // ==================== Tab 4: Anhui ====================
 function updateAnhui(){
@@ -228,7 +210,6 @@ function updateAnhui(){
   var meanRisk=risk.reduce(function(a,b){return a+b})/risk.length;
   Plotly.newPlot('chart-province',[{x:provs,y:risk,type:'bar',marker:{color:risk,colorscale:'RdYlGn_r'},text:risk.map(function(r){return r.toFixed(1)}),textposition:'outside'}],{title:'中国各省慢性病风险指数 (CHARLS社区数据模拟)',xaxis:{tickangle:-45},yaxis:{title:'风险指数'},shapes:[{type:'line',x0:-0.5,x1:27.5,y0:meanRisk,y1:meanRisk,line:{dash:'dash',color:'gray'}}],annotations:[{x:25,y:meanRisk+0.3,text:'全国均值: '+meanRisk.toFixed(1),showarrow:false,font:{color:'gray'}}]},{responsive:true});
 }
-updateAnhui();
 
 // ==================== Tab 5: Resource ====================
 function updateResource(){
@@ -238,7 +219,6 @@ function updateResource(){
   Plotly.newPlot('chart-resource-bar',[{y:resources,x:utils,type:'bar',orientation:'h',marker:{color:colors},text:utils.map(function(u){return (u*100).toFixed(0)+'%'}),textposition:'inside'}],{title:'医疗资源利用率 (M/M/c 排队论)',xaxis:{tickformat:'.0%'},shapes:[{type:'line',x0:0.7,x1:0.7,y0:-0.5,y1:5.5,line:{dash:'dash',color:'orange'}},{type:'line',x0:0.85,x1:0.85,y0:-0.5,y1:5.5,line:{dash:'dash',color:'red'}}],annotations:[{x:0.72,y:5,text:'高负荷70%',showarrow:false,font:{color:'orange',size:10}},{x:0.87,y:5,text:'过载85%',showarrow:false,font:{color:'red',size:10}}]},{responsive:true});
   Plotly.newPlot('chart-resource-pie',[{labels:resources,values:utils,type:'pie',hole:0.4,marker:{colors:colors}}],{title:'资源负荷分布'},{responsive:true});
 }
-updateResource();
 
 attachClicks();
 
@@ -272,6 +252,42 @@ function exportReport(){
   win.document.write(html);win.document.close();
   setTimeout(function(){win.print();},500);
 }
+</script>
+
+<!-- 动态加载Plotly CDN (不阻塞页面渲染) -->
+<script>
+(function(){
+  var s=document.createElement('script');
+  s.src='https://cdn.jsdelivr.net/npm/plotly.js@2.32.0/dist/plotly.min.js';
+  s.onload=function(){
+    document.getElementById('loading').style.display='none';
+    if(typeof updateModels==='function'){updateModels();updateSHAP();updateTrend();updateAnhui();updateResource();}
+  };
+  s.onerror=function(){
+    // jsdelivr failed, try bootcdn
+    var fb=document.createElement('script');
+    fb.src='https://cdn.bootcdn.net/ajax/libs/plotly.js/2.32.0/plotly.min.js';
+    fb.onload=function(){
+      document.getElementById('loading').style.display='none';
+      if(typeof updateModels==='function'){updateModels();updateSHAP();updateTrend();updateAnhui();updateResource();}
+    };
+    fb.onerror=function(){
+      document.getElementById('loading').innerHTML='<div style=font-size:48px>&#9888;</div><div>CDN加载失败</div><div style=font-size:12px;color:#999;margin-top:12px>Plotly.js不可用，请检查网络</div><div style=margin-top:12px><b>数据已就绪，以下为项目概况：</b></div><div style=text-align:left;margin-top:8px;font-size:13px>&#9989; 最佳模型AUC: 0.851 (心脏病BRFSS)<br>&#9989; 训练数据: 50.7万条<br>&#9989; OWID中国COVID-19: 333周<br>&#9989; 安徽样本: 203人<br>&#9989; 15种慢性病+SHAP可解释性</div>';
+    };
+    document.head.appendChild(fb);
+  };
+  document.head.appendChild(s);
+
+  // Timeout: if 8s passed and no load, show message
+  setTimeout(function(){
+    if(typeof Plotly==='undefined'){
+      var ld=document.getElementById('loading');
+      if(ld&&ld.style.display!=='none'){
+        ld.innerHTML='<div style=font-size:32px>&#9203;</div><div>CDN加载较慢...</div><div style=font-size:12px;color:#999;margin-top:8px>正在从备用源加载，请耐心等待</div>';
+      }
+    }
+  },8000);
+})();
 </script>
 </body>
 </html>
