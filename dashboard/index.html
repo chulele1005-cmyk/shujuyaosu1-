@@ -45,7 +45,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Microsoft YaHei','PingFang SC
 <div class="header">
   <div><h1>🏥 区域健康风险预测与智能诊疗决策平台</h1></div>
   <div style="text-align:right;font-size:12px;color:#bdc3c7">
-    <button onclick="exportReport()" style="background:#27ae60;color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;margin-bottom:6px">📥 导出报告</button>
+    <button onclick="exportReport()" style="background:#27ae60;color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;margin-bottom:6px">📥 下载报告</button>
     <div>数据: BRFSS 50.7万 + Cardio 7万 + OWID中国 333周</div><div>安徽: CHARLS 2020 (203人) | 2026-07</div></div>
 </div>
 
@@ -224,18 +224,13 @@ attachClicks();
 
 // ==================== Report Export ====================
 function exportReport(){
-  var win=window.open('','_blank','width=900,height=700');
   var d=new Date().toLocaleDateString('zh-CN');
   var html='<!DOCTYPE html><html lang=\"zh-CN\"><head><meta charset=\"UTF-8\"><title>健康风险预测报告</title>';
   html+='<style>body{font-family:Microsoft YaHei,sans-serif;max-width:800px;margin:40px auto;padding:20px;color:#2c3e50;line-height:1.8}';
   html+='h1{color:#1a3c6d;border-bottom:3px solid #2980b9;padding-bottom:10px}h2{color:#2980b9;margin-top:30px}';
   html+='table{width:100%;border-collapse:collapse;margin:15px 0}th{background:#2c3e50;color:white;padding:8px}td{padding:8px;border:1px solid #ddd}';
-  html+='.kpi{display:flex;gap:15px}.kpi>div{flex:1;text-align:center;padding:15px;background:#f8f9fa;border-radius:8px}';
-  html+='.kpi strong{font-size:22px;color:#27ae60}@media print{body{margin:0;padding:10px}}</style></head><body>
-<div id="loading" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:20px 40px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.15);z-index:10000;font-size:16px;text-align:center">
-  <div style="font-size:32px;margin-bottom:8px">&#9881;&#65039;</div>
-  <div>正在加载可视化平台...</div>
-</div>';
+  html+='.kpi{display:flex;gap:15px;flex-wrap:wrap}.kpi>div{flex:1;min-width:100px;text-align:center;padding:15px;background:#f8f9fa;border-radius:8px}';
+  html+='.kpi strong{font-size:22px;color:#27ae60}</style></head><body>';
   html+='<h1>区域健康风险预测与智能诊疗决策</h1><p>报告生成: '+d+' | 数据: BRFSS 50.7万+Cardio 7万+OWID中国333周+CHARLS安徽203人</p>';
   html+='<h2>一、项目概述</h2><p>本项目以区域健康风险预测与智能诊疗决策为核心目标，采用XGBoost/LightGBM集成学习、SHAP可解释性和CUSUM异常检测技术，基于公开脱敏医疗数据构建全流程分析方案。</p>';
   html+='<h2>二、慢性病风险评估模型</h2>';
@@ -249,8 +244,17 @@ function exportReport(){
   html+='<h2>五、合规声明</h2><p>所有数据来自公开脱敏平台。SHA-256哈希脱敏+差分隐私(epsilon=1.0)+K-匿名(K>=5)三层防护。遵循《数据安全法》《个人信息保护法》。模型输出仅供科研参考。</p>';
   html+='<p style=\"text-align:center;color:#95a5a6;margin-top:30px\">区域健康风险预测与智能诊疗决策 | '+d+'</p>';
   html+='</body></html>';
-  win.document.write(html);win.document.close();
-  setTimeout(function(){win.print();},500);
+
+  // 下载为HTML文件
+  var blob=new Blob([html],{type:'text/html;charset=UTF-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download='健康风险预测报告_'+d.replace(/\//g,'-')+'.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 </script>
 
