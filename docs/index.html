@@ -5,75 +5,173 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
 <title>Health Risk Intelligence — 区域健康风险预测与智能诊疗决策</title>
 
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  darkMode: 'class',
-  theme: {
-    extend: {
-      fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] },
-      colors: {
-        surface: { DEFAULT: 'rgba(255,255,255,0.03)', hover: 'rgba(255,255,255,0.06)', border: 'rgba(255,255,255,0.08)' }
-      },
-      animation: {
-        'fade-up': 'fadeUp 0.6s ease-out forwards',
-        'fade-in': 'fadeIn 0.4s ease-out forwards',
-        'pulse-subtle': 'pulseSubtle 3s ease-in-out infinite',
-        'float': 'float 6s ease-in-out infinite',
-      },
-      keyframes: {
-        fadeUp: { '0%': { opacity: '0', transform: 'translateY(16px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
-        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-        pulseSubtle: { '0%,100%': { opacity: '0.6' }, '50%': { opacity: '1' } },
-        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
-      }
-    }
-  }
-}
-</script>
-
-<!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- Three.js -->
-<script type="importmap">
-{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
-</script>
-
 <style>
-  :root { --glass-bg: rgba(15,23,42,0.7); --glass-border: rgba(255,255,255,0.06); }
-  body { background: #020617; overflow-x: hidden; }
+  /* === Design System === */
+  :root { --bg: #020617; --surface: rgba(15,23,42,0.65); --border: rgba(255,255,255,0.06); --text: #e2e8f0; --text-secondary: #94a3b8; --text-muted: #64748b; --accent: #6366f1; --accent-soft: rgba(99,102,241,0.2); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+  /* === Gradient Background === */
+  .gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; background: radial-gradient(ellipse 80% 60% at 20% 20%, rgba(99,102,241,0.06) 0%, transparent 60%), radial-gradient(ellipse 60% 80% at 80% 70%, rgba(99,102,241,0.04) 0%, transparent 60%), radial-gradient(ellipse 40% 50% at 50% 50%, rgba(168,85,247,0.03) 0%, transparent 50%); }
+
+  /* === Glass Morphism === */
   .glass { background: rgba(15,23,42,0.65); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.06); }
   .glass-card { background: rgba(15,23,42,0.55); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; transition: all 0.3s ease; }
-  .glass-card:hover { background: rgba(15,23,42,0.7); border-color: rgba(255,255,255,0.1); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-  .tab-pill { padding: 8px 20px; border-radius: 100px; font-size: 13px; font-weight: 500; color: #94a3b8; cursor: pointer; transition: all 0.25s ease; white-space: nowrap; user-select: none; }
+  .glass-card:hover { background: rgba(15,23,42,0.72); border-color: rgba(255,255,255,0.1); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.35); }
+
+  /* === Noise Texture === */
+  .noise::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.012; pointer-events: none; z-index: 100; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  /* === Layout === */
+  .main-content { position: relative; z-index: 1; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+  @media (max-width: 640px) { .container { padding: 0 12px; } }
+
+  /* === Header === */
+  .header-wrap { position: sticky; top: 0; z-index: 50; }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; gap: 12px; flex-wrap: wrap; }
+  .header-title { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; color: #e2e8f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .header-sub { font-size: 11px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .header-icon { width: 32px; height: 32px; border-radius: 10px; background: rgba(99,102,241,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .header-icon svg { width: 16px; height: 16px; color: #818cf8; }
+  .header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+  /* === Badge === */
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 500; }
+  .badge-indigo { background: rgba(99,102,241,0.12); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.25); }
+  .badge-emerald { background: rgba(52,211,153,0.12); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.25); }
+
+  /* === Button === */
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 13px; font-weight: 500; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #cbd5e1; }
+  .btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+  .btn svg { width: 16px; height: 16px; }
+  @media (max-width: 640px) { .btn { padding: 8px 12px; font-size: 12px; } .btn span { display: none; } }
+
+  /* === KPI Bento Grid === */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  @media (max-width: 1024px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  .kpi-card { padding: 16px 20px; }
+  @media (max-width: 640px) { .kpi-card { padding: 12px 14px; } }
+  .kpi-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .kpi-tag { font-size: 10px; font-weight: 500; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+  .kpi-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .kpi-dot-green { background: #34d399; animation: pulseDot 3s ease-in-out infinite; }
+  .kpi-value { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  .kpi-value-sm { font-size: 18px; font-weight: 500; }
+  @media (max-width: 640px) { .kpi-value { font-size: 22px; } }
+  .kpi-value-green { color: #34d399; } .kpi-value-blue { color: #38bdf8; } .kpi-value-amber { color: #fbbf24; } .kpi-value-violet { color: #a78bfa; }
+  .kpi-label { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+  .kpi-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+  /* === Tab Pills === */
+  .tab-bar { display: flex; gap: 4px; padding: 6px; border-radius: 16px; margin-bottom: 24px; overflow-x: auto; -ms-overflow-style: none; scrollbar-width: none; }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-pill { padding: 8px 20px; border-radius: 100px; font-size: 13px; font-weight: 500; color: #94a3b8; cursor: pointer; transition: all 0.25s ease; white-space: nowrap; user-select: none; background: transparent; border: none; }
   .tab-pill:hover { color: #e2e8f0; background: rgba(255,255,255,0.05); }
   .tab-pill.active { color: #e2e8f0; background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.3); }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; animation: fadeUp 0.4s ease-out; }
-  .kpi-value { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
-  .kpi-label { font-size: 12px; color: #94a3b8; margin-top: 6px; }
-  .kpi-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
-  .chart-container { background: rgba(15,23,42,0.4); border-radius: 14px; border: 1px solid rgba(255,255,255,0.04); padding: 16px; min-height: 350px; }
-  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 500; }
-  .noise::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.015; pointer-events: none; z-index: 100; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  @media (max-width: 640px) { .tab-pill { padding: 6px 14px; font-size: 11px; } }
+
+  /* === Tab Content === */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeUp 0.4s ease-out; }
+
+  /* === Chart Container === */
+  .chart-box { background: rgba(15,23,42,0.4); border-radius: 14px; border: 1px solid rgba(255,255,255,0.04); padding: 16px; min-height: 340px; }
+  @media (max-width: 640px) { .chart-box { padding: 10px; min-height: 260px; } }
+
+  /* === Grid === */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+  .grid-5 { display: grid; grid-template-columns: 2fr 3fr; gap: 16px; }
+  @media (max-width: 1024px) { .grid-2, .grid-3, .grid-5 { grid-template-columns: 1fr; } }
+  .mb-4 { margin-bottom: 16px; }
+  .mb-6 { margin-bottom: 24px; }
+  .mt-4 { margin-top: 16px; }
+  .mt-10 { margin-top: 40px; }
+  .gap-4 { gap: 16px; }
+  .gap-3 { gap: 12px; }
+
+  /* === Select Input === */
+  .select-dark { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 8px 12px; font-size: 13px; color: #e2e8f0; outline: none; transition: border-color 0.2s; }
+  .select-dark:focus { border-color: rgba(99,102,241,0.4); }
+  .range-slider { -webkit-appearance: none; width: 128px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.1); outline: none; accent-color: #6366f1; }
+
+  /* === Info Card === */
+  .info-card { padding: 20px; }
+  .info-card h3 { font-size: 15px; font-weight: 600; color: #e2e8f0; margin-bottom: 12px; }
+  .info-card p { font-size: 12px; color: #64748b; margin-bottom: 16px; }
+  .info-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
+  .info-row .label { color: #94a3b8; }
+  .info-row .value { font-weight: 600; color: #e2e8f0; }
+  .info-warn { font-size: 11px; color: rgba(251,191,36,0.8); margin-top: 16px; }
+
+  /* === Footer === */
+  .footer { text-align: center; margin-top: 40px; padding-bottom: 32px; }
+  .footer p { font-size: 11px; color: #475569; }
+  .footer .sub { font-size: 10px; color: #334155; margin-top: 4px; }
+
+  /* === Loading Overlay === */
+  .loading-overlay { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; background: #020617; transition: opacity 0.5s ease; }
+  .loading-center { text-align: center; }
+  .spinner { width: 40px; height: 40px; margin: 0 auto 16px; border-radius: 50%; border: 2px solid #6366f1; border-top-color: transparent; animation: spin 0.8s linear infinite; }
+  .loading-text { font-size: 13px; color: #64748b; }
+
+  /* === Controls Row === */
+  .controls { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .controls-label { font-size: 12px; font-weight: 500; color: #94a3b8; }
+  .controls-value { font-size: 13px; font-weight: 600; color: #e2e8f0; min-width: 60px; }
+
+  /* === Misc === */
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .flex-wrap { flex-wrap: wrap; }
+  .flex-shrink-0 { flex-shrink: 0; }
+  .min-w-0 { min-width: 0; }
+  .hidden-sm { display: block; }
+  @media (max-width: 640px) { .hidden-sm { display: none; } }
+  .space-y-3 > * + * { margin-top: 12px; }
+  .w-full { width: 100%; }
+  .text-center { text-align: center; }
+  .text-left { text-align: left; }
+  .p-4 { padding: 16px; }
+  .px-4 { padding-left: 16px; padding-right: 16px; }
+  .py-2 { padding-top: 8px; padding-bottom: 8px; }
+  .mt-2 { margin-top: 8px; }
+  .mt-6 { margin-top: 24px; }
+  .mx-auto { margin-left: auto; margin-right: auto; }
+  .max-w-md { max-width: 448px; }
+  .space-y-2 > * + * { margin-top: 8px; }
+  .font-medium { font-weight: 500; }
+  .font-semibold { font-weight: 600; }
+  .text-13 { font-size: 13px; }
+  .text-12 { font-size: 12px; }
+  .text-11 { font-size: 11px; }
+
+  /* === Animations === */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes pulseDot { 0%,100% { opacity: 0.6; } 50% { opacity: 1; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+  .animate-fade-up { animation: fadeUp 0.6s ease-out forwards; }
+  .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+  .animate-spin { animation: spin 0.8s linear infinite; }
   .stagger-1 { animation-delay: 0.05s; opacity: 0; }
   .stagger-2 { animation-delay: 0.1s; opacity: 0; }
   .stagger-3 { animation-delay: 0.15s; opacity: 0; }
   .stagger-4 { animation-delay: 0.2s; opacity: 0; }
   .stagger-5 { animation-delay: 0.25s; opacity: 0; }
-  @media (max-width: 768px) {
-    .kpi-value { font-size: 22px; }
-    .tab-pill { padding: 6px 14px; font-size: 11px; }
-    .chart-container { padding: 10px; min-height: 280px; }
-  }
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
-  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-  #particle-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-  .main-content { position: relative; z-index: 1; }
+
+  /* === Hover === */
+  .hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+  .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+  .header-wrap { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid rgba(255,255,255,0.05); }
 </style>
 
 <script>
@@ -81,82 +179,82 @@ tailwind.config = {
 var chinaData={"dates":["2020-01-05","2020-01-12","2020-01-19","2020-01-26","2020-02-02","2020-02-09","2020-02-16","2020-02-23","2020-03-01","2020-03-08","2020-03-15","2020-03-22","2020-03-29","2020-04-05","2020-04-12","2020-04-19","2020-04-26","2020-05-03","2020-05-10","2020-05-17","2020-05-24","2020-05-31","2020-06-07","2020-06-14","2020-06-21","2020-06-28","2020-07-05","2020-07-12","2020-07-19","2020-07-26","2020-08-02","2020-08-09","2020-08-16","2020-08-23","2020-08-30","2020-09-06","2020-09-13","2020-09-20","2020-09-27","2020-10-04","2020-10-11","2020-10-18","2020-10-25","2020-11-01","2020-11-08","2020-11-15","2020-11-22","2020-11-29","2020-12-06","2020-12-13","2020-12-20","2020-12-27","2021-01-03","2021-01-10","2021-01-17","2021-01-24","2021-01-31","2021-02-07","2021-02-14","2021-02-21","2021-02-28","2021-03-07","2021-03-14","2021-03-21","2021-03-28","2021-04-04","2021-04-11","2021-04-18","2021-04-25","2021-05-02","2021-05-09","2021-05-16","2021-05-23","2021-05-30","2021-06-06","2021-06-13","2021-06-20","2021-06-27","2021-07-04","2021-07-11","2021-07-18","2021-07-25","2021-08-01","2021-08-08","2021-08-15","2021-08-22","2021-08-29","2021-09-05","2021-09-12","2021-09-19","2021-09-26","2021-10-03","2021-10-10","2021-10-17","2021-10-24","2021-10-31","2021-11-07","2021-11-14","2021-11-21","2021-11-28","2021-12-05","2021-12-12","2021-12-19","2021-12-26","2022-01-02","2022-01-09","2022-01-16","2022-01-23","2022-01-30","2022-02-06","2022-02-13","2022-02-20","2022-02-27","2022-03-06","2022-03-13","2022-03-20","2022-03-27","2022-04-03","2022-04-10","2022-04-17","2022-04-24","2022-05-01","2022-05-08","2022-05-15","2022-05-22","2022-05-29","2022-06-05","2022-06-12","2022-06-19","2022-06-26","2022-07-03","2022-07-10","2022-07-17","2022-07-24","2022-07-31","2022-08-07","2022-08-14","2022-08-21","2022-08-28","2022-09-04","2022-09-11","2022-09-18","2022-09-25","2022-10-02","2022-10-09","2022-10-16","2022-10-23","2022-10-30","2022-11-06","2022-11-13","2022-11-20","2022-11-27","2022-12-04","2022-12-11","2022-12-18","2022-12-25","2023-01-01","2023-01-08","2023-01-15","2023-01-22","2023-01-29","2023-02-05","2023-02-12","2023-02-19","2023-02-26","2023-03-05","2023-03-12","2023-03-19","2023-03-26","2023-04-02","2023-04-09","2023-04-16","2023-04-23","2023-04-30","2023-05-07","2023-05-14","2023-05-21","2023-05-28","2023-06-04","2023-06-11","2023-06-18","2023-06-25","2023-07-02","2023-07-09","2023-07-16","2023-07-23","2023-07-30","2023-08-06","2023-08-13","2023-08-20","2023-08-27","2023-09-03","2023-09-10","2023-09-17","2023-09-24","2023-10-01","2023-10-08","2023-10-15","2023-10-22","2023-10-29","2023-11-05","2023-11-12","2023-11-19","2023-11-26","2023-12-03","2023-12-10","2023-12-17","2023-12-24","2023-12-31","2024-01-07","2024-01-14","2024-01-21","2024-01-28","2024-02-04","2024-02-11","2024-02-18","2024-02-25","2024-03-03","2024-03-10","2024-03-17","2024-03-24","2024-03-31","2024-04-07","2024-04-14","2024-04-21","2024-04-28","2024-05-05","2024-05-12","2024-05-19","2024-05-26","2024-06-02","2024-06-09","2024-06-16","2024-06-23","2024-06-30","2024-07-07","2024-07-14","2024-07-21","2024-07-28","2024-08-04","2024-08-11","2024-08-18","2024-08-25","2024-09-01","2024-09-08","2024-09-15","2024-09-22","2024-09-29","2024-10-06","2024-10-13","2024-10-20","2024-10-27","2024-11-03","2024-11-10","2024-11-17","2024-11-24","2024-12-01","2024-12-08","2024-12-15","2024-12-22","2024-12-29","2025-01-05","2025-01-12","2025-01-19","2025-01-26","2025-02-02","2025-02-09","2025-02-16","2025-02-23","2025-03-02","2025-03-09","2025-03-16","2025-03-23","2025-03-30","2025-04-06","2025-04-13","2025-04-20","2025-04-27","2025-05-04","2025-05-11","2025-05-18","2025-05-25","2025-06-01","2025-06-08","2025-06-15","2025-06-22","2025-06-29","2025-07-06","2025-07-13","2025-07-20","2025-07-27","2025-08-03","2025-08-10","2025-08-17","2025-08-24","2025-08-31","2025-09-07","2025-09-14","2025-09-21","2025-09-28","2025-10-05","2025-10-12","2025-10-19","2025-10-26","2025-11-02","2025-11-09","2025-11-16","2025-11-23","2025-11-30","2025-12-07","2025-12-14","2025-12-21","2025-12-28","2026-01-04","2026-01-11","2026-01-18","2026-01-25","2026-02-01","2026-02-08","2026-02-15","2026-02-22","2026-03-01","2026-03-08","2026-03-15","2026-03-22","2026-03-29","2026-04-05","2026-04-12","2026-04-19","2026-04-26","2026-05-03","2026-05-10","2026-05-17"],"cases":[7,1,72,5987,22220,27015,2321,383,206,108,56,314,719,795,556,440,56,12,13,35,55,22,70,172,175,67,22,33,142,230,363,251,143,82,96,74,60,91,176,137,232,341,446,672,582,332,250,682,1218,1537,1221,870,1720,2653,3877,2566,1640,90,50,126,118,77,49,68,158,229,132,118,173,272,397,388,437,412,319,300,402,499,1053,1074,1333,1291,1245,809,721,729,560,477,439,495,515,486,525,428,545,858,737,768,812,925,721,547,866,759,263,74,240,1161,3219,4283,3212,14428,12834,20309,30931,32008,38794,41261,536252,315472,1730390,8348614,21678900,51191246,66058989,72360876,74808963,31092367,13762142,1990588,601344,424689,331501,326680,252841,215888,171756,50476,11262,7756,23356,33154,31223,37923,33724,20660,29490,19388,5046,5161,3348,5360,10292,11864,47267,14617,15025,12139,8086,5498,5801,3133,3948,2805,4726,4499,6196,4123,3304,3436,6447,5376,1807,2305,2235,967,1797,1340,1396,1922,1940,2394,1815,2825,3394,3031,2425,4208,1897,2177,1503,937,561,388,439,367,202,146,654,391,1398,896,678,1792,1510,3833,4215,1966,2675,1051,740,1635,1731,2195,729,293,967,518,1300,1337,2076,804,241,12244,4296,1333,2121,1225,1257,514,1269,1142,11985,17541,17402,15764,15146,14606,11227,12021,15902,9112,11352,14009,16593,19440,17413,19136,17262,19354,17272,23073,26879,27864,24489,26979,23703,21953,20250,18666,22765,22681,25011,24842,25592,18580,24454,24177,23488,28476,21879,20572,20946,23280,18346,18749,21040,21405,21891,19117,17703,21640,19526,16129,25863,17517,16655,15189,14725,10577,10425,10512,8324,8424,7777]};
 </script>
 </head>
-<body class="font-sans antialiased text-slate-100">
+<body>
 
 <!-- Noise texture overlay -->
 <div class="noise"></div>
 
-<!-- 3D Particle Background -->
-<canvas id="particle-canvas"></canvas>
+<!-- Gradient Mesh Background -->
+<div class="gradient-bg"></div>
 
 <!-- Main Content -->
 <div class="main-content min-h-screen">
 
   <!-- Header -->
-  <header class="glass sticky top-0 z-50 border-b border-white/5">
-    <div class="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between gap-4 flex-wrap">
-      <div class="flex items-center gap-3 min-w-0">
-        <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
-          <svg class="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+  <header class="glass header-wrap">
+    <div class="container header-inner">
+      <div class="flex items-center" style="gap:12px;min-width:0">
+        <div class="header-icon">
+          <svg  fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
         </div>
         <div class="min-w-0">
-          <h1 class="text-[15px] font-semibold tracking-tight text-slate-200 truncate">Health Risk Intelligence</h1>
-          <p class="text-[11px] text-slate-500 truncate">Regional Health Risk Prediction & Clinical Decision Support</p>
+          <h1 class="header-title">Health Risk Intelligence</h1>
+          <p class="header-sub">Regional Health Risk Prediction & Clinical Decision Support</p>
         </div>
       </div>
-      <div class="flex items-center gap-3 flex-shrink-0">
-        <span class="badge bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">V2.0</span>
-        <span class="badge bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hidden sm:inline-flex">Production</span>
-        <button onclick="exportReport()" class="inline-flex items-center gap-2 px-4 py-2 text-[13px] font-medium bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-xl transition-all duration-200 text-slate-300">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          <span class="hidden sm:inline">Download Report</span>
+      <div class="header-right">
+        <span class="badge badge-indigo">V2.0</span>
+        <span class="badge badge-emerald hidden-sm">Production</span>
+        <button onclick="exportReport()" class="btn">
+          <svg  fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span class="hidden-sm">Download Report</span>
         </button>
       </div>
     </div>
   </header>
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+  <div class="container" style="padding-top:24px;padding-bottom:24px">
 
     <!-- KPI Bento Grid -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6 stagger-animate">
-      <div class="glass-card p-4 sm:p-5 cursor-default stagger-1 animate-fade-up">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Best AUC</span>
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse-subtle"></span>
+    <div class="kpi-grid stagger-animate">
+      <div class="glass-card kpi-card stagger-1 animate-fade-up">
+        <div class="kpi-header">
+          <span class="kpi-tag">Best AUC</span>
+          <span class="kpi-dot kpi-dot-green"></span>
         </div>
-        <div class="kpi-value text-emerald-400">0.851</div>
+        <div class="kpi-value kpi-value-green">0.851</div>
         <div class="kpi-label">Heart Disease Model</div>
         <div class="kpi-sub">BRFSS 253,680 samples</div>
       </div>
-      <div class="glass-card p-4 sm:p-5 cursor-default stagger-2 animate-fade-up">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Training Data</span>
+      <div class="glass-card kpi-card stagger-2 animate-fade-up">
+        <div class="kpi-header">
+          <span class="kpi-tag">Training Data</span>
         </div>
-        <div class="kpi-value text-sky-400">50.7<span class="text-lg font-medium">万</span></div>
+        <div class="kpi-value kpi-value-blue">50.7<span class="text-lg font-medium">万</span></div>
         <div class="kpi-label">BRFSS Diabetes + Heart</div>
         <div class="kpi-sub">21 original features</div>
       </div>
-      <div class="glass-card p-4 sm:p-5 cursor-default stagger-3 animate-fade-up">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">OWID China</span>
+      <div class="glass-card kpi-card stagger-3 animate-fade-up">
+        <div class="kpi-header">
+          <span class="kpi-tag">OWID China</span>
         </div>
-        <div class="kpi-value text-amber-400">333<span class="text-lg font-medium">周</span></div>
+        <div class="kpi-value kpi-value-amber">333<span class="text-lg font-medium">周</span></div>
         <div class="kpi-label">Real COVID-19 Data</div>
         <div class="kpi-sub">2020.01 – 2026.05</div>
       </div>
-      <div class="glass-card p-4 sm:p-5 cursor-default stagger-4 animate-fade-up">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Anhui CHARLS</span>
+      <div class="glass-card kpi-card stagger-4 animate-fade-up">
+        <div class="kpi-header">
+          <span class="kpi-tag">Anhui CHARLS</span>
         </div>
-        <div class="kpi-value text-violet-400">203<span class="text-lg font-medium">人</span></div>
+        <div class="kpi-value kpi-value-violet">203<span class="text-lg font-medium">人</span></div>
         <div class="kpi-label">Validation Cohort</div>
         <div class="kpi-sub">15 chronic disease types</div>
       </div>
     </div>
 
     <!-- Tab Navigation -->
-    <div class="glass rounded-2xl p-1.5 mb-6 overflow-x-auto scrollbar-hide">
-      <div class="flex gap-1 min-w-max">
+    <div class="glass tab-bar">
+      <div class="flex" style="gap:4px;min-width:max-content">
         <button class="tab-pill active" onclick="switchTab('model')" id="tab-model">Model Performance</button>
         <button class="tab-pill" onclick="switchTab('shap')" id="tab-shap">Risk Factors</button>
         <button class="tab-pill" onclick="switchTab('trend')" id="tab-trend">Trend Forecast</button>
@@ -166,139 +264,88 @@ var chinaData={"dates":["2020-01-05","2020-01-12","2020-01-19","2020-01-26","202
     </div>
 
     <!-- Tab: Model Performance -->
-    <div id="panel-model" class="tab-content active">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div class="chart-container"><div id="chart-auc" class="w-full" style="height:380px"></div></div>
-        <div class="chart-container"><div id="chart-f1" class="w-full" style="height:380px"></div></div>
+    <div id="panel-model" class="tab-panel active">
+      <div class="grid-2">
+        <div class="chart-box"><div id="chart-auc" class="w-full" style="height:380px"></div></div>
+        <div class="chart-box"><div id="chart-f1" class="w-full" style="height:380px"></div></div>
       </div>
       <div class="mt-4 chart-container"><div id="chart-table" class="w-full" style="height:260px"></div></div>
     </div>
 
     <!-- Tab: SHAP -->
-    <div id="panel-shap" class="tab-content">
-      <div class="flex items-center gap-3 mb-4 flex-wrap">
-        <span class="text-[12px] font-medium text-slate-400">Select Model:</span>
-        <select id="shapModel" onchange="updateSHAP()" class="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[13px] text-slate-200 focus:outline-none focus:border-indigo-500/40 transition-colors">
+    <div id="panel-shap" class="tab-panel">
+      <div class="controls">
+        <span class="controls-label">Select Model:</span>
+        <select id="shapModel" onchange="updateSHAP()" class="select-dark">
           <option value="cardio">Cardiovascular (AUC 0.801)</option>
           <option value="diabetes">BRFSS Diabetes (AUC 0.828)</option>
           <option value="heart">BRFSS Heart (AUC 0.851)</option>
         </select>
       </div>
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div class="chart-container lg:col-span-2"><div id="chart-shap" class="w-full" style="height:450px"></div></div>
-        <div class="chart-container"><div id="chart-gauge" class="w-full" style="height:450px"></div></div>
+      <div class="grid-3">
+        <div class="chart-box" style="grid-column:span 2"><div id="chart-shap" class="w-full" style="height:450px"></div></div>
+        <div class="chart-box"><div id="chart-gauge" class="w-full" style="height:450px"></div></div>
       </div>
     </div>
 
     <!-- Tab: Trend -->
-    <div id="panel-trend" class="tab-content">
-      <div class="flex items-center gap-4 mb-4 flex-wrap">
-        <div class="flex items-center gap-2">
-          <span class="text-[12px] font-medium text-slate-400">Forecast:</span>
-          <input type="range" id="forecastDays" min="30" max="180" step="30" value="90" oninput="updateTrend()" class="w-32 accent-indigo-500">
-          <span id="fcLabel" class="text-[13px] font-semibold text-slate-300 w-12">90 days</span>
+    <div id="panel-trend" class="tab-panel">
+      <div class="controls">
+        <div class="controls">
+          <span class="controls-label">Forecast:</span>
+          <input type="range" id="forecastDays" min="30" max="180" step="30" value="90" oninput="updateTrend()" class="range-slider">
+          <span id="fcLabel" class="controls-value">90 days</span>
         </div>
       </div>
-      <div class="chart-container mb-4"><div id="chart-trend" class="w-full" style="height:420px"></div></div>
-      <div class="chart-container"><div id="chart-decomp" class="w-full" style="height:380px"></div></div>
+      <div class="chart-box mb-4"><div id="chart-trend" class="w-full" style="height:420px"></div></div>
+      <div class="chart-box"><div id="chart-decomp" class="w-full" style="height:380px"></div></div>
     </div>
 
     <!-- Tab: Anhui -->
-    <div id="panel-anhui" class="tab-content">
-      <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <div class="glass-card p-5 lg:col-span-2">
-          <h3 class="text-[15px] font-semibold text-slate-200 mb-4">Anhui Province Overview</h3>
-          <p class="text-[12px] text-slate-500 mb-4">Data Source: CHARLS 2020 (China Health and Retirement Longitudinal Study)</p>
-          <div class="space-y-3 text-[13px]">
-            <div class="flex justify-between py-2 border-b border-white/5"><span class="text-slate-400">Respondents</span><span class="font-semibold text-slate-200">203</span></div>
-            <div class="flex justify-between py-2 border-b border-white/5"><span class="text-slate-400">Age Range</span><span class="font-semibold text-slate-200">45+</span></div>
-            <div class="flex justify-between py-2 border-b border-white/5"><span class="text-slate-400">Self-reported Hypertension</span><span class="font-semibold text-slate-200">~32%</span></div>
-            <div class="flex justify-between py-2 border-b border-white/5"><span class="text-slate-400">Chronic Disease Types</span><span class="font-semibold text-slate-200">15</span></div>
-            <div class="flex justify-between py-2 border-b border-white/5"><span class="text-slate-400">Communities</span><span class="font-semibold text-slate-200">218</span></div>
-            <div class="flex justify-between py-2 border-b border-white/5"><span class="text-slate-400">Survey Modules</span><span class="font-semibold text-slate-200">10</span></div>
+    <div id="panel-anhui" class="tab-panel">
+      <div class="grid-5">
+        <div class="glass-card info-card">
+          <h3 style="font-size:15px;font-weight:600;color:#e2e8f0;margin-bottom:16px">Anhui Province Overview</h3>
+          <p style="font-size:12px;color:#64748b;margin-bottom:16px">Data Source: CHARLS 2020 (China Health and Retirement Longitudinal Study)</p>
+          <div class="space-y-3" style="font-size:13px">
+            <div class="info-row"><span >Respondents</span><span class="font-semibold ">203</span></div>
+            <div class="info-row"><span >Age Range</span><span class="font-semibold ">45+</span></div>
+            <div class="info-row"><span >Self-reported Hypertension</span><span class="font-semibold ">~32%</span></div>
+            <div class="info-row"><span >Chronic Disease Types</span><span class="font-semibold ">15</span></div>
+            <div class="info-row"><span >Communities</span><span class="font-semibold ">218</span></div>
+            <div class="info-row"><span >Survey Modules</span><span class="font-semibold ">10</span></div>
           </div>
-          <p class="text-[11px] text-amber-400/80 mt-4">Biomarker data pending — full regional health indicators available after acquisition</p>
+          <p class="info-warn">Biomarker data pending — full regional health indicators available after acquisition</p>
         </div>
-        <div class="chart-container lg:col-span-3"><div id="chart-province" class="w-full" style="height:420px"></div></div>
+        <div class="chart-box" style="grid-column:span 3"><div id="chart-province" class="w-full" style="height:420px"></div></div>
       </div>
     </div>
 
     <!-- Tab: Resource -->
-    <div id="panel-resource" class="tab-content">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div class="chart-container"><div id="chart-resource-bar" class="w-full" style="height:380px"></div></div>
-        <div class="chart-container"><div id="chart-resource-pie" class="w-full" style="height:380px"></div></div>
+    <div id="panel-resource" class="tab-panel">
+      <div class="grid-2">
+        <div class="chart-box"><div id="chart-resource-bar" class="w-full" style="height:380px"></div></div>
+        <div class="chart-box"><div id="chart-resource-pie" class="w-full" style="height:380px"></div></div>
       </div>
     </div>
 
     <!-- Footer -->
-    <footer class="mt-10 pb-8 text-center">
-      <p class="text-[11px] text-slate-600">Health Risk Intelligence Platform &copy; 2026</p>
-      <p class="text-[10px] text-slate-700 mt-1">Public de-identified data · SHA-256 + Differential Privacy (&#949;=1.0) + K-anonymity (K&#8805;5) · Research reference only</p>
+    <footer class="footer">
+      <p style="font-size:11px;color:#475569">Health Risk Intelligence Platform &copy; 2026</p>
+      <p style="font-size:10px;color:#334155;margin-top:4px">Public de-identified data · SHA-256 + Differential Privacy (&#949;=1.0) + K-anonymity (K&#8805;5) · Research reference only</p>
     </footer>
   </div>
 </div>
 
 <!-- Loading overlay -->
-<div id="loading-overlay" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#020617] transition-opacity duration-500">
+<div id="loading-overlay" class="loading-overlay">
   <div class="text-center">
-    <div class="w-10 h-10 mx-auto mb-4 rounded-full border-2 border-indigo-400 border-t-transparent animate-spin"></div>
-    <p class="text-[13px] text-slate-500">Initializing platform...</p>
+    <div class="spinner"></div>
+    <p class="loading-text">Initializing platform...</p>
   </div>
 </div>
 
 <script>
-// ===== Three.js Particle Background =====
-(function(){
-  var canvas=document.getElementById('particle-canvas');
-  var renderer,scene,camera,particles,clock=new THREE.Clock(); // THREE imported via importmap
-  function init(){
-    import('three').then(function(m){
-      var THREE=m;
-      renderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:true});
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-      renderer.setSize(window.innerWidth,window.innerHeight);
-      scene=new THREE.Scene();
-      camera=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,100);
-      camera.position.z=30;
-
-      var geo=new THREE.BufferGeometry();
-      var count=800;
-      var positions=new Float32Array(count*3);
-      var colors=new Float32Array(count*3);
-      for(var i=0;i<count;i++){
-        positions[i*3]=(Math.random()-0.5)*60;
-        positions[i*3+1]=(Math.random()-0.5)*40;
-        positions[i*3+2]=(Math.random()-0.5)*20;
-        colors[i*3]=0.39+Math.random()*0.1;
-        colors[i*3+1]=0.42+Math.random()*0.1;
-        colors[i*3+2]=0.65+Math.random()*0.15;
-      }
-      geo.setAttribute('position',new THREE.BufferAttribute(positions,3));
-      geo.setAttribute('color',new THREE.BufferAttribute(colors,3));
-      var mat=new THREE.PointsMaterial({size:0.08,vertexColors:true,transparent:true,opacity:0.6,blending:THREE.AdditiveBlending,depthWrite:false});
-      particles=new THREE.Points(geo,mat);
-      scene.add(particles);
-      animate(THREE);
-
-      window.addEventListener('resize',function(){
-        camera.aspect=window.innerWidth/window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth,window.innerHeight);
-      });
-    });
-  }
-
-  function animate(THREE){
-    requestAnimationFrame(function(){animate(THREE);});
-    var t=clock.getElapsedTime()*0.05;
-    if(particles){particles.rotation.y+=0.0003;particles.rotation.x=Math.sin(t)*0.05;}
-    renderer.render(scene,camera);
-  }
-
-  if(typeof THREE!=='undefined'||true){init();}
-})();
-
 // ===== Tab Switching =====
 function switchTab(name){
   document.querySelectorAll('.tab-pill').forEach(function(t){t.classList.remove('active');});
@@ -482,7 +529,7 @@ function exportReport(){
       updateModels();updateSHAP();updateTrend();updateAnhui();updateResource();
     };
     fb.onerror=function(){
-      document.getElementById('loading-overlay').innerHTML='<div class="text-center"><p class="text-slate-400 text-[15px]">Failed to load visualization library</p><p class="text-slate-600 text-[12px] mt-2">Please check your network connection and refresh.</p><div class="mt-6 p-6 glass-card max-w-md mx-auto text-left text-[13px] space-y-2"><p class="text-slate-300 font-medium">Available Data Summary:</p><p class="text-slate-400">Best AUC: 0.851 (Heart Disease)</p><p class="text-slate-400">Training Data: 507,000 records</p><p class="text-slate-400">OWID China COVID-19: 333 weeks</p><p class="text-slate-400">CHARLS Anhui: 203 participants</p></div></div>';
+      document.getElementById('loading-overlay').innerHTML='<div class="text-center"><p class=" text-[15px]">Failed to load visualization library</p><p class=" text-[12px] mt-2">Please check your network connection and refresh.</p><div class="glass-card p-4 mx-auto text-left space-y-2" style="max-width:448px;font-size:13px;margin-top:24px"><p class=" font-medium">Available Data Summary:</p><p >Best AUC: 0.851 (Heart Disease)</p><p >Training Data: 507,000 records</p><p >OWID China COVID-19: 333 weeks</p><p >CHARLS Anhui: 203 participants</p></div></div>';
     };
     document.head.appendChild(fb);
   };
@@ -492,7 +539,7 @@ function exportReport(){
     if(typeof Plotly==='undefined'){
       var o=document.getElementById('loading-overlay');
       if(o&&o.style.opacity!=='0'){
-        o.innerHTML='<div class="text-center"><div class="w-10 h-10 mx-auto mb-4 rounded-full border-2 border-amber-400 border-t-transparent animate-spin"></div><p class="text-slate-400 text-[13px]">Loading from backup CDN...</p></div>';
+        o.innerHTML='<div class="text-center"><div class="w-10 h-10 mx-auto mb-4 rounded-full border-2 border-amber-400 border-t-transparent animate-spin"></div><p class=" text-[13px]">Loading from backup CDN...</p></div>';
       }
     }
   },8000);
