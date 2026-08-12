@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=yes">
+<title>区域健康风险预测与智能诊疗决策 — 用户反馈调查问卷</title>
+<style>
+/* ===== Design System ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#6366f1;--primary-dark:#4f46e5;--primary-light:#e0e7ff;
+  --bg:#f1f5f9;--card-bg:#fff;--text:#1e293b;--text-secondary:#64748b;--text-muted:#94a3b8;
+  --border:#e2e8f0;--border-focus:#6366f1;--success:#10b981;--error:#ef4444;
+  --radius:12px;--radius-sm:8px;--transition:0.2s ease;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+.container{max-width:720px;margin:0 auto;padding:20px 16px 40px}
+
+/* ===== Header ===== */
+.survey-header{text-align:center;padding:32px 20px 24px;background:linear-gradient(135deg,#1e293b 0%,#334155 100%);color:#fff;border-radius:0 0 24px 24px;margin-bottom:24px}
+.survey-header h1{font-size:22px;font-weight:700;margin-bottom:8px;letter-spacing:-0.02em}
+.survey-header p{font-size:13px;color:#94a3b8;max-width:480px;margin:0 auto;line-height:1.7}
+.survey-header .badge-row{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.survey-header .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;font-size:11px;font-weight:500;background:rgba(255,255,255,0.1);color:#cbd5e1;border:1px solid rgba(255,255,255,0.08)}
+
+/* ===== Progress Bar ===== */
+.progress-wrap{padding:0 4px;margin-bottom:20px}
+.progress-inner{display:flex;align-items:center;gap:4px}
+.progress-step{flex:1;height:4px;border-radius:2px;background:var(--border);transition:background var(--transition)}
+.progress-step.done{background:var(--primary)}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-top:6px}
+.progress-label span{font-weight:500}
+
+/* ===== Card ===== */
+.card{background:var(--card-bg);border-radius:var(--radius);padding:24px 20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.03);border:1px solid var(--border);transition:box-shadow var(--transition)}
+.card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+.section-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:var(--primary-light);color:var(--primary-dark);font-size:13px;font-weight:700;margin-right:10px;flex-shrink:0}
+.section-title{display:flex;align-items:center;font-size:17px;font-weight:700;margin-bottom:4px}
+.section-desc{font-size:12px;color:var(--text-secondary);margin-left:38px;margin-bottom:20px}
+
+/* ===== Form Elements ===== */
+.form-group{margin-bottom:18px}
+.form-group:last-child{margin-bottom:0}
+label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+label .required{color:var(--error);margin-left:2px}
+label .hint{font-weight:400;color:var(--text-muted);font-size:11px;margin-left:8px}
+
+/* Radio / Checkbox Groups */
+.option-group{display:flex;flex-direction:column;gap:6px}
+.option-row{display:flex;align-items:center;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all var(--transition);background:#fafbfc}
+.option-row:hover{border-color:#cbd5e1;background:#f8fafc}
+.option-row input{appearance:none;-webkit-appearance:none;width:18px;height:18px;border:2px solid var(--border);border-radius:50%;margin-right:12px;cursor:pointer;transition:all var(--transition);flex-shrink:0;position:relative}
+.option-row input:checked{border-color:var(--primary);background:var(--primary)}
+.option-row input:checked::after{content:'';position:absolute;top:3px;left:3px;width:8px;height:8px;border-radius:50%;background:#fff}
+.option-row:has(input:checked){border-color:var(--primary-light);background:#f5f3ff}
+.option-row label{font-size:13px;font-weight:400;margin:0;cursor:pointer;flex:1}
+.option-row .tag{font-size:10px;padding:2px 8px;border-radius:100px;background:#e2e8f0;color:#64748b;font-weight:500;margin-left:8px;white-space:nowrap}
+
+/* Checkbox style */
+.option-row input[type=checkbox]{border-radius:4px}
+.option-row input[type=checkbox]:checked{border-radius:4px}
+.option-row input[type=checkbox]:checked::after{content:'';position:absolute;top:2px;left:5px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);border-radius:0;background:transparent}
+
+/* Rating Scale */
+.rating-scale{display:flex;gap:0;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.rating-btn{flex:1;padding:12px 8px;text-align:center;font-size:12px;font-weight:500;color:var(--text-secondary);background:#fff;border:none;border-right:1px solid var(--border);cursor:pointer;transition:all var(--transition)}
+.rating-btn:last-child{border-right:none}
+.rating-btn:hover{background:#f1f5f9}
+.rating-btn.selected{background:var(--primary);color:#fff;font-weight:600}
+.rating-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:4px;padding:0 4px}
+
+/* Matrix Rating */
+.matrix-table{width:100%;border-collapse:collapse;font-size:12px}
+.matrix-table th,.matrix-table td{padding:10px 8px;text-align:center;border-bottom:1px solid var(--border)}
+.matrix-table th{font-weight:600;color:var(--text-secondary);font-size:11px;background:#f8fafc}
+.matrix-table th:first-child{text-align:left;min-width:140px}
+.matrix-table td:first-child{text-align:left;font-weight:500}
+.matrix-table tr:hover td{background:#fafbfc}
+.matrix-radio{appearance:none;-webkit-appearance:none;width:32px;height:32px;border:2px solid var(--border);border-radius:50%;cursor:pointer;transition:all var(--transition);display:inline-flex;align-items:center;justify-content:center;font-size:0;vertical-align:middle}
+.matrix-radio:hover{border-color:#a5b4fc}
+.matrix-radio:checked{border-color:var(--primary);background:var(--primary)}
+.matrix-radio:checked::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
+@media(max-width:640px){
+  .matrix-table{font-size:10px}
+  .matrix-table th{font-size:9px}
+  .matrix-table th:first-child{min-width:100px}
+  .matrix-radio{width:28px;height:28px}
+}
+
+/* Text Input */
+input[type=text],input[type=email],input[type=number],select,textarea{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;color:var(--text);background:#fafbfc;transition:all var(--transition);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--border-focus);box-shadow:0 0 0 3px rgba(99,102,241,0.1);background:#fff}
+textarea{resize:vertical;min-height:80px;line-height:1.6}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+
+/* ===== Buttons ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;transition:all var(--transition);border:none;outline:none}
+.btn-primary{background:var(--primary);color:#fff;width:100%}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px);box-shadow:0 4px 12px rgba(99,102,241,0.3)}
+.btn-secondary{background:#fff;color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:#f8fafc}
+.btn-row{display:flex;gap:12px;margin-top:20px}
+
+/* ===== Toast ===== */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:100px;font-size:13px;font-weight:600;color:#fff;z-index:1000;animation:slideUp 0.3s ease-out;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+.toast-success{background:#10b981}
+.toast-error{background:#ef4444}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* ===== Conditional Questions ===== */
+.conditional{display:none;margin-top:12px;padding:12px 16px;background:#f8fafc;border-radius:var(--radius-sm);border-left:3px solid var(--primary)}
+.conditional.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ===== Footer ===== */
+.survey-footer{text-align:center;padding:24px 20px;color:var(--text-muted);font-size:11px}
+.survey-footer p+p{margin-top:4px}
+
+/* ===== Responsive ===== */
+@media(max-width:640px){
+  .survey-header h1{font-size:18px}
+  .card{padding:18px 14px}
+  .section-title{font-size:15px}
+  .rating-scale{flex-wrap:wrap}
+  .rating-btn{padding:10px 6px;font-size:11px}
+  .option-row{padding:8px 12px}
+  .matrix-table th:first-child,.matrix-table td:first-child{min-width:90px}
+}
+
+/* ===== Print ===== */
+@media print{
+  body{background:#fff}
+  .btn,.toast{display:none!important}
+  .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="survey-header">
+  <h1>区域健康风险预测与智能诊疗决策</h1>
+  <p>Health Risk Intelligence Platform &mdash; User Feedback Survey</p>
+  <div class="badge-row">
+    <span class="badge">&#9202; 5&ndash;8 min</span>
+    <span class="badge">&#128274; Anonymous</span>
+    <span class="badge">&#128274; Confidential</span>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-inner">
+      <div class="progress-step done" id="step1-bar"></div>
+      <div class="progress-step" id="step2-bar"></div>
+      <div class="progress-step" id="step3-bar"></div>
+      <div class="progress-step" id="step4-bar"></div>
+      <div class="progress-step" id="step5-bar"></div>
+    </div>
+    <div class="progress-label"><span id="progress-text">Part 1 / 5</span><span id="progress-pct">20%</span></div>
+  </div>
+
+  <form id="surveyForm" onsubmit="return handleSubmit(event)">
+
+    <!-- ================================================================
+         PART 1: Basic Information
+         ================================================================ -->
+    <div class="card" id="section1">
+      <div class="section-title"><span class="section-num">1</span>Basic Information</div>
+      <div class="section-desc">All responses are anonymous and confidential. This information helps us analyze feedback by group.</div>
+
+      <!-- Q1: Identity -->
+      <div class="form-group">
+        <label>1.1 Your primary role <span class="required">*</span></label>
+        <div class="option-group" id="q1_identity">
+          <div class="option-row"><input type="radio" name="identity" value="student" onchange="toggleConditional()" required><label>Student</label></div>
+          <div class="option-row"><input type="radio" name="identity" value="teacher" onchange="toggleConditional()" required><label>Faculty / Teacher</label></div>
+          <div class="option-row"><input type="radio" name="identity" value="staff" onchange="toggleConditional()" required><label>Administrative Staff</label></div>
+          <div class="option-row"><input type="radio" name="identity" value="researcher" onchange="toggleConditional()" required><label>Researcher</label></div>
+          <div class="option-row"><input type="radio" name="identity" value="other" onchange="toggleConditional()" required><label>Other</label></div>
+        </div>
+      </div>
+
+      <!-- Q1.1 Student: Grade -->
+      <div class="form-group conditional" id="cond_student">
+        <label>1.1a Your grade / education level</label>
+        <select name="student_grade">
+          <option value="">-- Please select --</option>
+          <option value="ug1">Undergraduate Year 1</option>
+          <option value="ug2">Undergraduate Year 2</option>
+          <option value="ug3">Undergraduate Year 3</option>
+          <option value="ug4">Undergraduate Year 4</option>
+          <option value="ug5">Undergraduate Year 5</option>
+          <option value="ms">Master Student</option>
+          <option value="phd">PhD Student</option>
+        </select>
+      </div>
+
+      <!-- Q1.1 Teacher: Department -->
+      <div class="form-group conditional" id="cond_teacher">
+        <label>1.1b Your department / college</label>
+        <select name="teacher_dept">
+          <option value="">-- Please select --</option>
+          <option value="cs">Computer Science / Software Engineering</option>
+          <option value="med">Medicine / Clinical Medicine</option>
+          <option value="ph">Public Health</option>
+          <option value="bio">Biomedical Engineering / Bioinformatics</option>
+          <option value="ds">Data Science / Statistics</option>
+          <option value="mgmt">Healthcare Management</option>
+          <option value="math">Mathematics</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <!-- Q1.1 Staff: Department -->
+      <div class="form-group conditional" id="cond_staff">
+        <label>1.1c Your department / unit</label>
+        <input type="text" name="staff_dept" placeholder="e.g., IT Department, Academic Affairs Office">
+      </div>
+
+      <!-- Q1.1 Researcher: Field -->
+      <div class="form-group conditional" id="cond_researcher">
+        <label>1.1d Your research field</label>
+        <input type="text" name="researcher_field" placeholder="e.g., Epidemiology, ML for Healthcare">
+      </div>
+
+      <!-- Q1.1 Other -->
+      <div class="form-group conditional" id="cond_other">
+        <label>1.1e Please specify</label>
+        <input type="text" name="other_identity" placeholder="Your role">
+      </div>
+
+      <!-- Q2: Field/Discipline -->
+      <div class="form-group">
+        <label>1.2 Your academic background / field <span class="required">*</span></label>
+        <div class="option-group" id="q2_field">
+          <div class="option-row"><input type="radio" name="field" value="cs_ds" required><label>Computer Science / Data Science / AI</label></div>
+          <div class="option-row"><input type="radio" name="field" value="med_clinical" required><label>Medicine / Clinical Medicine</label></div>
+          <div class="option-row"><input type="radio" name="field" value="public_health" required><label>Public Health / Epidemiology</label></div>
+          <div class="option-row"><input type="radio" name="field" value="bio_info" required><label>Biomedical Engineering / Bioinformatics</label></div>
+          <div class="option-row"><input type="radio" name="field" value="math_stat" required><label>Mathematics / Statistics</label></div>
+          <div class="option-row"><input type="radio" name="field" value="health_mgmt" required><label>Healthcare Management / Policy</label></div>
+          <div class="option-row"><input type="radio" name="field" value="other" required><label>Other Field</label></div>
+        </div>
+      </div>
+
+      <!-- Q3: Experience -->
+      <div class="form-group">
+        <label>1.3 Experience with health data analysis / ML tools <span class="required">*</span></label>
+        <div class="option-group" id="q3_experience">
+          <div class="option-row"><input type="radio" name="experience" value="none" required><label>No prior experience</label></div>
+          <div class="option-row"><input type="radio" name="experience" value="beginner" required><label>Beginner (basic Python / data analysis)</label></div>
+          <div class="option-row"><input type="radio" name="experience" value="intermediate" required><label>Intermediate (comfortable with ML tools)</label></div>
+          <div class="option-row"><input type="radio" name="experience" value="advanced" required><label>Advanced (ML research / deployment)</label></div>
+          <div class="option-row"><input type="radio" name="experience" value="expert" required><label>Expert (professional / published)</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         PART 2: Project Awareness & Usage
+         ================================================================ -->
+    <div class="card" id="section2">
+      <div class="section-title"><span class="section-num">2</span>Awareness &amp; Usage</div>
+      <div class="section-desc">Help us understand how you discovered and interact with the platform.</div>
+
+      <!-- Q4: Discovery -->
+      <div class="form-group">
+        <label>2.1 How did you first learn about this project? <span class="required">*</span></label>
+        <div class="option-group" id="q4_discovery">
+          <div class="option-row"><input type="radio" name="discovery" value="course" required><label>Course / Classroom introduction</label></div>
+          <div class="option-row"><input type="radio" name="discovery" value="advisor" required><label>Advisor / Supervisor recommendation</label></div>
+          <div class="option-row"><input type="radio" name="discovery" value="peer" required><label>Peer / Colleague referral</label></div>
+          <div class="option-row"><input type="radio" name="discovery" value="event" required><label>Academic event / Competition exhibition</label></div>
+          <div class="option-row"><input type="radio" name="discovery" value="social" required><label>Social media / Campus promotion</label></div>
+          <div class="option-row"><input type="radio" name="discovery" value="other" required><label>Other</label></div>
+        </div>
+      </div>
+
+      <!-- Q5: Usage understanding -->
+      <div class="form-group">
+        <label>2.2 How well do you understand the project's objectives? <span class="required">*</span></label>
+        <div class="option-group" id="q5_understanding">
+          <div class="option-row"><input type="radio" name="understanding" value="5" required><label>Very well &mdash; I can explain it to others</label></div>
+          <div class="option-row"><input type="radio" name="understanding" value="4" required><label>Well &mdash; I understand the main goals</label></div>
+          <div class="option-row"><input type="radio" name="understanding" value="3" required><label>Moderately &mdash; I have a general idea</label></div>
+          <div class="option-row"><input type="radio" name="understanding" value="2" required><label>Slightly &mdash; I know it exists but few details</label></div>
+          <div class="option-row"><input type="radio" name="understanding" value="1" required><label>Not at all &mdash; I just learned about it</label></div>
+        </div>
+      </div>
+
+      <!-- Q6: Usage frequency -->
+      <div class="form-group">
+        <label>2.3 How often have you used the platform? <span class="required">*</span></label>
+        <div class="option-group" id="q6_frequency">
+          <div class="option-row"><input type="radio" name="frequency" value="daily" required><label>Daily / Almost daily</label></div>
+          <div class="option-row"><input type="radio" name="frequency" value="weekly" required><label>Weekly (1&ndash;3 times per week)</label></div>
+          <div class="option-row"><input type="radio" name="frequency" value="monthly" required><label>Monthly (1&ndash;3 times per month)</label></div>
+          <div class="option-row"><input type="radio" name="frequency" value="rarely" required><label>Rarely (a few times total)</label></div>
+          <div class="option-row"><input type="radio" name="frequency" value="once" required><label>Only once / First time today</label></div>
+        </div>
+      </div>
+
+      <!-- Q7: Usage scenario (multi-select) -->
+      <div class="form-group">
+        <label>2.4 What are your primary use cases? <span class="hint">Select all that apply</span></label>
+        <div class="option-group" id="q7_usecase">
+          <div class="option-row"><input type="checkbox" name="usecase" value="research"><label>Academic research / Paper reference</label></div>
+          <div class="option-row"><input type="checkbox" name="usecase" value="teaching"><label>Teaching / Coursework material</label></div>
+          <div class="option-row"><input type="checkbox" name="usecase" value="self_health"><label>Personal health risk assessment</label></div>
+          <div class="option-row"><input type="checkbox" name="usecase" value="policy"><label>Public health policy reference</label></div>
+          <div class="option-row"><input type="checkbox" name="usecase" value="dev"><label>Technical learning (ML / Data Science)</label></div>
+          <div class="option-row"><input type="checkbox" name="usecase" value="curiosity"><label>General curiosity / Exploration</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         PART 3: Core Module Satisfaction (5-point Likert)
+         ================================================================ -->
+    <div class="card" id="section3">
+      <div class="section-title"><span class="section-num">3</span>Core Module Satisfaction</div>
+      <div class="section-desc">Rate each functional module on a 5-point scale: 1 = Poor / Unusable, 2 = Below Average, 3 = Acceptable, 4 = Good, 5 = Excellent.</div>
+
+      <!-- Matrix: Core Features -->
+      <div class="form-group">
+        <label>3.1 Core Platform Features</label>
+        <div style="overflow-x:auto">
+        <table class="matrix-table">
+          <thead>
+            <tr><th>Feature</th><th width="48">1</th><th width="48">2</th><th width="48">3</th><th width="48">4</th><th width="48">5</th><th width="48">N/A</th></tr>
+          </thead>
+          <tbody id="matrix_core">
+            <tr><td>Data Acquisition &amp; Integration</td><td><input type="radio" class="matrix-radio" name="m_data_acq" value="1" required></td><td><input type="radio" class="matrix-radio" name="m_data_acq" value="2"></td><td><input type="radio" class="matrix-radio" name="m_data_acq" value="3"></td><td><input type="radio" class="matrix-radio" name="m_data_acq" value="4"></td><td><input type="radio" class="matrix-radio" name="m_data_acq" value="5"></td><td><input type="radio" class="matrix-radio" name="m_data_acq" value="na"></td></tr>
+            <tr><td>Data Cleaning &amp; Preprocessing</td><td><input type="radio" class="matrix-radio" name="m_data_clean" value="1" required></td><td><input type="radio" class="matrix-radio" name="m_data_clean" value="2"></td><td><input type="radio" class="matrix-radio" name="m_data_clean" value="3"></td><td><input type="radio" class="matrix-radio" name="m_data_clean" value="4"></td><td><input type="radio" class="matrix-radio" name="m_data_clean" value="5"></td><td><input type="radio" class="matrix-radio" name="m_data_clean" value="na"></td></tr>
+            <tr><td>Multi-modal Data Fusion</td><td><input type="radio" class="matrix-radio" name="m_data_fusion" value="1" required></td><td><input type="radio" class="matrix-radio" name="m_data_fusion" value="2"></td><td><input type="radio" class="matrix-radio" name="m_data_fusion" value="3"></td><td><input type="radio" class="matrix-radio" name="m_data_fusion" value="4"></td><td><input type="radio" class="matrix-radio" name="m_data_fusion" value="5"></td><td><input type="radio" class="matrix-radio" name="m_data_fusion" value="na"></td></tr>
+            <tr><td>Privacy Protection (SHA-256 + DP)</td><td><input type="radio" class="matrix-radio" name="m_privacy" value="1" required></td><td><input type="radio" class="matrix-radio" name="m_privacy" value="2"></td><td><input type="radio" class="matrix-radio" name="m_privacy" value="3"></td><td><input type="radio" class="matrix-radio" name="m_privacy" value="4"></td><td><input type="radio" class="matrix-radio" name="m_privacy" value="5"></td><td><input type="radio" class="matrix-radio" name="m_privacy" value="na"></td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- Matrix: Modeling -->
+      <div class="form-group">
+        <label>3.2 Prediction &amp; Modeling</label>
+        <div style="overflow-x:auto">
+        <table class="matrix-table">
+          <thead>
+            <tr><th>Feature</th><th width="48">1</th><th width="48">2</th><th width="48">3</th><th width="48">4</th><th width="48">5</th><th width="48">N/A</th></tr>
+          </thead>
+          <tbody id="matrix_models">
+            <tr><td>Chronic Disease Risk Model</td><td><input type="radio" class="matrix-radio" name="m_chronic" value="1" required></td><td><input type="radio" class="matrix-radio" name="m_chronic" value="2"></td><td><input type="radio" class="matrix-radio" name="m_chronic" value="3"></td><td><input type="radio" class="matrix-radio" name="m_chronic" value="4"></td><td><input type="radio" class="matrix-radio" name="m_chronic" value="5"></td><td><input type="radio" class="matrix-radio" name="m_chronic" value="na"></td></tr>
+            <tr><td>SHAP Model Interpretability</td><td><input type="radio" class="matrix-radio" name="m_shap" value="1" required></td><td><input type="radio" class="matrix-radio" name="m_shap" value="2"></td><td><input type="radio" class="matrix-radio" name="m_shap" value="3"></td><td><input type="radio" class="matrix-radio" name="m_shap" value="4"></td><td><input type="radio" class="matrix-radio" name="m_shap" value="5"></td><td><input type="radio" class="matrix-radio" name="m_shap" value="na"></td></tr>
+            <tr><td>Health Trend Forecast (CUSUM)</td><td><input type="radio" class="matrix-radio" name="m_trend" value="1" required></td><td><input type="radio" class="matrix-radio" name="m_trend" value="2"></td><td><input type="radio" class="matrix-radio" name="m_trend" value="3"></td><td><input type="radio" class="matrix-radio" name="m_trend" value="4"></td><td><input type="radio" class="matrix-radio" name="m_trend" value="5"></td><td><input type="radio" class="matrix-radio" name="m_trend" value="na"></td></tr>
+            <tr><td>Medical Resource Prediction (M/M/c)</td><td><input type="radio" class="matrix-radio" name="m_resource" value="1" required></td><td><input type="radio" class="matrix-radio" name="m_resource" value="2"></td><td><input type="radio" class="matrix-radio" name="m_resource" value="3"></td><td><input type="radio" class="matrix-radio" name="m_resource" value="4"></td><td><input type="radio" class="matrix-radio" name="m_resource" value="5"></td><td><input type="radio" class="matrix-radio" name="m_resource" value="na"></td></tr>
+            <tr><td>CHARLS Anhui Regional Validation</td><td><input type="radio" class="matrix-radio" name="m_charls" value="1" required></td><td><input type="radio" class="matrix-radio" name="m_charls" value="2"></td><td><input type="radio" class="matrix-radio" name="m_charls" value="3"></td><td><input type="radio" class="matrix-radio" name="m_charls" value="4"></td><td><input type="radio" class="matrix-radio" name="m_charls" value="5"></td><td><input type="radio" class="matrix-radio" name="m_charls" value="na"></td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- Matrix: Dashboard & UX -->
+      <div class="form-group">
+        <label>3.3 Visualization &amp; User Experience</label>
+        <div style="overflow-x:auto">
+        <table class="matrix-table">
+          <thead>
+            <tr><th>Aspect</th><th width="48">1</th><th width="48">2</th><th width="48">3</th><th width="48">4</th><th width="48">5</th><th width="48">N/A</th></tr>
+          </thead>
+          <tbody id="matrix_ux">
+            <tr><td>Overall Visual Design</td><td><input type="radio" class="matrix-radio" name="ux_visual" value="1" required></td><td><input type="radio" class="matrix-radio" name="ux_visual" value="2"></td><td><input type="radio" class="matrix-radio" name="ux_visual" value="3"></td><td><input type="radio" class="matrix-radio" name="ux_visual" value="4"></td><td><input type="radio" class="matrix-radio" name="ux_visual" value="5"></td><td><input type="radio" class="matrix-radio" name="ux_visual" value="na"></td></tr>
+            <tr><td>Ease of Navigation</td><td><input type="radio" class="matrix-radio" name="ux_nav" value="1" required></td><td><input type="radio" class="matrix-radio" name="ux_nav" value="2"></td><td><input type="radio" class="matrix-radio" name="ux_nav" value="3"></td><td><input type="radio" class="matrix-radio" name="ux_nav" value="4"></td><td><input type="radio" class="matrix-radio" name="ux_nav" value="5"></td><td><input type="radio" class="matrix-radio" name="ux_nav" value="na"></td></tr>
+            <tr><td>Chart / Graph Clarity</td><td><input type="radio" class="matrix-radio" name="ux_charts" value="1" required></td><td><input type="radio" class="matrix-radio" name="ux_charts" value="2"></td><td><input type="radio" class="matrix-radio" name="ux_charts" value="3"></td><td><input type="radio" class="matrix-radio" name="ux_charts" value="4"></td><td><input type="radio" class="matrix-radio" name="ux_charts" value="5"></td><td><input type="radio" class="matrix-radio" name="ux_charts" value="na"></td></tr>
+            <tr><td>Mobile Responsiveness</td><td><input type="radio" class="matrix-radio" name="ux_mobile" value="1" required></td><td><input type="radio" class="matrix-radio" name="ux_mobile" value="2"></td><td><input type="radio" class="matrix-radio" name="ux_mobile" value="3"></td><td><input type="radio" class="matrix-radio" name="ux_mobile" value="4"></td><td><input type="radio" class="matrix-radio" name="ux_mobile" value="5"></td><td><input type="radio" class="matrix-radio" name="ux_mobile" value="na"></td></tr>
+            <tr><td>Report Export Function</td><td><input type="radio" class="matrix-radio" name="ux_export" value="1" required></td><td><input type="radio" class="matrix-radio" name="ux_export" value="2"></td><td><input type="radio" class="matrix-radio" name="ux_export" value="3"></td><td><input type="radio" class="matrix-radio" name="ux_export" value="4"></td><td><input type="radio" class="matrix-radio" name="ux_export" value="5"></td><td><input type="radio" class="matrix-radio" name="ux_export" value="na"></td></tr>
+            <tr><td>Loading Speed / Performance</td><td><input type="radio" class="matrix-radio" name="ux_perf" value="1" required></td><td><input type="radio" class="matrix-radio" name="ux_perf" value="2"></td><td><input type="radio" class="matrix-radio" name="ux_perf" value="3"></td><td><input type="radio" class="matrix-radio" name="ux_perf" value="4"></td><td><input type="radio" class="matrix-radio" name="ux_perf" value="5"></td><td><input type="radio" class="matrix-radio" name="ux_perf" value="na"></td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- Overall satisfaction -->
+      <div class="form-group">
+        <label>3.4 Overall satisfaction with the platform <span class="required">*</span></label>
+        <div class="rating-scale" id="q_overall">
+          <button type="button" class="rating-btn" onclick="setRating('overall',1)" data-value="1">1<span style="display:block;font-size:10px">Poor</span></button>
+          <button type="button" class="rating-btn" onclick="setRating('overall',2)" data-value="2">2<span style="display:block;font-size:10px">Below Avg</span></button>
+          <button type="button" class="rating-btn" onclick="setRating('overall',3)" data-value="3">3<span style="display:block;font-size:10px">Acceptable</span></button>
+          <button type="button" class="rating-btn" onclick="setRating('overall',4)" data-value="4">4<span style="display:block;font-size:10px">Good</span></button>
+          <button type="button" class="rating-btn" onclick="setRating('overall',5)" data-value="5">5<span style="display:block;font-size:10px">Excellent</span></button>
+        </div>
+        <input type="hidden" name="overall" id="overall_val" value="" required>
+        <div class="rating-labels"><span>1 — Poor</span><span>5 — Excellent</span></div>
+      </div>
+
+      <!-- Recommend? -->
+      <div class="form-group">
+        <label>3.5 How likely are you to recommend this platform? <span class="required">*</span></label>
+        <div class="option-group" id="q_recommend">
+          <div class="option-row"><input type="radio" name="recommend" value="10" required><label>10 &mdash; Extremely likely</label></div>
+          <div class="option-row"><input type="radio" name="recommend" value="8" required><label>8&ndash;9 &mdash; Very likely</label></div>
+          <div class="option-row"><input type="radio" name="recommend" value="6" required><label>6&ndash;7 &mdash; Somewhat likely</label></div>
+          <div class="option-row"><input type="radio" name="recommend" value="4" required><label>4&ndash;5 &mdash; Neutral</label></div>
+          <div class="option-row"><input type="radio" name="recommend" value="1" required><label>1&ndash;3 &mdash; Unlikely</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         PART 4: Open-ended Feedback
+         ================================================================ -->
+    <div class="card" id="section4">
+      <div class="section-title"><span class="section-num">4</span>Open-ended Feedback</div>
+      <div class="section-desc">Your candid thoughts help us improve. All questions are optional but highly encouraged.</div>
+
+      <div class="form-group">
+        <label>4.1 What do you find most valuable about this platform?</label>
+        <textarea name="feedback_value" placeholder="What aspects of the platform are most useful or impressive to you?"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>4.2 What are the main pain points or frustrations you encountered?</label>
+        <textarea name="feedback_pain" placeholder="What problems, bugs, or difficulties did you experience?"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>4.3 What features or data would you like to see added? (Teacher-specific)</label>
+        <textarea name="feedback_future" placeholder="Specific datasets, models, visualizations, or capabilities you would like us to add..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>4.4 How could this platform better serve teaching or research needs?</label>
+        <textarea name="feedback_teaching" placeholder="Your suggestions for integrating this platform into coursework or research workflow..."></textarea>
+      </div>
+    </div>
+
+    <!-- ================================================================
+         PART 5: Future Feature Priority
+         ================================================================ -->
+    <div class="card" id="section5">
+      <div class="section-title"><span class="section-num">5</span>Future Feature Priorities</div>
+      <div class="section-desc">Select the features you would most value in future versions. <span class="hint">Choose up to 5</span></div>
+
+      <div class="form-group">
+        <label>5.1 Priority features (select up to 5) <span class="required">*</span></label>
+        <div class="option-group" id="q_features">
+          <div class="option-row"><input type="checkbox" name="features" value="realtime" onchange="limitCheckboxes(this)" data-max="5"><label>Real-time data streaming dashboard</label></div>
+          <div class="option-row"><input type="checkbox" name="features" value="deep_learning" onchange="limitCheckboxes(this)" data-max="5"><label>Deep Learning / Transformer models</label></div>
+          <div class="option-row"><input type="checkbox" name="features" value="more_china" onchange="limitCheckboxes(this)" data-max="5"><label>More Chinese regional datasets (beyond Anhui)</label></div>
+          <div class="option-row"><input type="checkbox" name="features" value="api" onchange="limitCheckboxes(this)" data-max="5"><label>REST API for programmatic access</label></div>
+          <div class="option-row"><input type="checkbox" name="features" value="mobile_app" onchange="limitCheckboxes(this)" data-max="5"><label>Mobile App (iOS / Android)</label></div>
+          <div class="option-row"><input type="checkbox" name="features" value="collab" onchange="limitCheckboxes(this)" data-max="5"><label>Multi-user collaboration &amp; annotation</label></div>
+          <div class="option-row"><input type="checkbox" name="features" value="imaging" onchange="limitCheckboxes(this)" data-max="5"><label>Medical imaging analysis (CT/MRI/X-ray)</label></div>
+          <div class="option-row"><input type="checkbox" name="features" value="nlp" onchange="limitCheckboxes(this)" data-max="5"><label>Clinical NLP (EHR text extraction)</label></div>
+          <div class="option-row"><input type="checkbox" name="features" value="genomics" onchange="limitCheckboxes(this)" data-max="5"><label>Genomic / Biomarker integration</label></div>
+          <div class="option-row"><input type="checkbox" name="features" value="llm" onchange="limitCheckboxes(this)" data-max="5"><label>LLM-powered health Q&amp;A assistant</label></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>5.2 Other feature suggestions</label>
+        <input type="text" name="features_other" placeholder="Any other features not listed above...">
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="btn-row">
+      <button type="submit" class="btn btn-primary" id="submitBtn">Submit Survey</button>
+    </div>
+    <p style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:8px">
+      By submitting, you consent to the anonymous use of your responses for research and improvement purposes.
+    </p>
+
+  </form>
+
+  <!-- Footer -->
+  <div class="survey-footer">
+    <p>Health Risk Intelligence Platform &copy; 2026</p>
+    <p>All responses are anonymous and stored locally. Data is used solely for project evaluation and improvement.</p>
+    <p style="margin-top:12px"><strong>Data Analysis Plan</strong> — see bottom of page after submission.</p>
+  </div>
+
+  <!-- Analysis Plan (initially hidden) -->
+  <div class="card" id="analysisPlan" style="display:none">
+    <div class="section-title"><span class="section-num">&#10003;</span>Data Analysis Plan</div>
+    <div class="section-desc">Reference plan for analyzing collected survey responses.</div>
+
+    <div style="font-size:13px;line-height:1.8;color:var(--text)">
+      <h4 style="margin:16px 0 8px;color:var(--primary-dark)">1. Data Cleaning</h4>
+      <ul style="padding-left:20px">
+        <li>Remove duplicate submissions (same browser fingerprint + timestamp &lt; 2 min)</li>
+        <li>Handle missing values: drop responses with &gt; 30% unanswered required fields</li>
+        <li>Recode "N/A" ratings as missing (exclude from mean calculation)</li>
+        <li>Validate identity-conditional logic (students answering teacher-specific Qs flagged)</li>
+      </ul>
+
+      <h4 style="margin:16px 0 8px;color:var(--primary-dark)">2. Descriptive Statistics</h4>
+      <ul style="padding-left:20px">
+        <li><strong>Demographics:</strong> Bar chart of identity types, pie chart of academic fields</li>
+        <li><strong>Awareness:</strong> Stacked bar of discovery channels &times; identity</li>
+        <li><strong>Frequency:</strong> Histogram of usage frequency by role group</li>
+      </ul>
+
+      <h4 style="margin:16px 0 8px;color:var(--primary-dark)">3. Satisfaction Analysis</h4>
+      <ul style="padding-left:20px">
+        <li><strong>Module mean scores:</strong> Bar chart of avg score per feature (excl. N/A)</li>
+        <li><strong>Heatmap:</strong> Feature &times; Role group mean satisfaction</li>
+        <li><strong>NPS-style:</strong> Recommend score distribution (Promoters 9-10, Passives 7-8, Detractors 1-6)</li>
+        <li><strong>Gap analysis:</strong> Identify features with highest variance (suggests inconsistent UX)</li>
+      </ul>
+
+      <h4 style="margin:16px 0 8px;color:var(--primary-dark)">4. Comparative Analysis (Group Differences)</h4>
+      <ul style="padding-left:20px">
+        <li><strong>Student vs. Teacher:</strong> Independent t-test / Mann-Whitney U on overall satisfaction</li>
+        <li><strong>By experience level:</strong> ANOVA across 5 experience groups for each module score</li>
+        <li><strong>By academic field:</strong> Kruskal-Wallis test for field-based differences in feature priorities</li>
+      </ul>
+
+      <h4 style="margin:16px 0 8px;color:var(--primary-dark)">5. Text Analysis (Open-ended)</h4>
+      <ul style="padding-left:20px">
+        <li><strong>Keyword extraction:</strong> TF-IDF to identify top themes in pain points and suggestions</li>
+        <li><strong>Sentiment analysis:</strong> Classify feedback as positive / neutral / negative</li>
+        <li><strong>Topic modeling:</strong> LDA to group suggestions into thematic clusters</li>
+      </ul>
+
+      <h4 style="margin:16px 0 8px;color:var(--primary-dark)">6. Priority Matrix</h4>
+      <ul style="padding-left:20px">
+        <li>Feature request count &times; avg satisfaction of requesters</li>
+        <li>Quadrant: High demand + Low satisfaction = Critical fix</li>
+        <li>Quadrant: High demand + High satisfaction = Expand &amp; promote</li>
+      </ul>
+
+      <h4 style="margin:16px 0 8px;color:var(--primary-dark)">7. Tools &amp; Export</h4>
+      <ul style="padding-left:20px">
+        <li>Export: Survey responses &rarr; JSON &rarr; pandas DataFrame &rarr; CSV</li>
+        <li>Visualization: matplotlib / seaborn / plotly for charts</li>
+        <li>Statistics: scipy.stats for hypothesis testing</li>
+        <li>NLP: jieba (Chinese tokenization) + scikit-learn TfidfVectorizer</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Export Panel -->
+<div id="exportPanel" class="card" style="display:none;margin-top:16px">
+  <div class="section-title">Collected Responses</div>
+  <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px" id="responseCount">0 responses</div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="exportJSON()" style="flex:1">Export JSON</button>
+    <button class="btn btn-secondary" onclick="exportCSV()" style="flex:1">Export CSV</button>
+    <button class="btn btn-secondary" onclick="clearResponses()" style="flex:1">Clear Data</button>
+  </div>
+</div>
+
+<script>
+// ===== Conditional Logic =====
+function toggleConditional(){
+  var identity = document.querySelector('input[name="identity"]:checked')?.value;
+  ['student','teacher','staff','researcher','other'].forEach(function(id){
+    var el = document.getElementById('cond_'+id);
+    if(el) el.classList.toggle('active', identity === id);
+  });
+  updateProgress();
+}
+
+// ===== Rating Buttons =====
+function setRating(name, value){
+  var container = document.querySelector('#q_overall')?.parentElement;
+  if(!container) return;
+  container.querySelectorAll('.rating-btn').forEach(function(btn){
+    btn.classList.toggle('selected', parseInt(btn.dataset.value) === value);
+  });
+  document.getElementById('overall_val').value = value;
+  updateProgress();
+}
+
+// ===== Checkbox Limit =====
+function limitCheckboxes(el){
+  var max = parseInt(el.dataset.max || 5);
+  var group = el.closest('.option-group');
+  var checked = group.querySelectorAll('input[type=checkbox]:checked');
+  if(checked.length > max){
+    el.checked = false;
+    showToast('You may select up to ' + max + ' options', 'error');
+  }
+}
+
+// ===== Progress Tracking =====
+function updateProgress(){
+  var total = 18; // Approximate number of required questions
+  var completed = 0;
+
+  // Count radio groups with selections
+  var radioGroups = new Set();
+  document.querySelectorAll('input[type=radio]:checked').forEach(function(r){
+    radioGroups.add(r.name);
+  });
+  completed += radioGroups.size;
+
+  // Count matrix selections
+  document.querySelectorAll('.matrix-radio:checked').forEach(function(r){
+    completed += 0.3; // Partial credit for matrix rows
+  });
+
+  // Count overall rating
+  if(document.getElementById('overall_val').value) completed += 0.5;
+
+  var pct = Math.min(100, Math.round((completed / total) * 100));
+  pct = Math.max(5, pct); // Minimum 5% for part 1
+
+  var part;
+  if(pct < 20) part = 1;
+  else if(pct < 40) part = 2;
+  else if(pct < 65) part = 3;
+  else if(pct < 85) part = 4;
+  else part = 5;
+
+  document.getElementById('progress-text').textContent = 'Part ' + part + ' / 5';
+  document.getElementById('progress-pct').textContent = pct + '%';
+
+  // Update step bars
+  for(var i = 1; i <= 5; i++){
+    var bar = document.getElementById('step'+i+'-bar');
+    if(bar) bar.classList.toggle('done', i <= part);
+  }
+}
+
+// ===== Form Event Listeners =====
+document.addEventListener('change', function(e){
+  if(e.target.matches('input[type=radio], input[type=checkbox]') || e.target.matches('.matrix-radio')){
+    updateProgress();
+  }
+});
+
+// ===== Submit =====
+function handleSubmit(event){
+  event.preventDefault();
+
+  // Validate overall rating
+  if(!document.getElementById('overall_val').value){
+    showToast('Please rate overall satisfaction (Section 3.4)', 'error');
+    document.getElementById('section3').scrollIntoView({behavior:'smooth',block:'center'});
+    return false;
+  }
+
+  // Collect all form data
+  var fd = new FormData(document.getElementById('surveyForm'));
+  var response = {timestamp: new Date().toISOString()};
+
+  // Identity
+  response.identity = fd.get('identity') || '';
+  response.student_grade = fd.get('student_grade') || '';
+  response.teacher_dept = fd.get('teacher_dept') || '';
+  response.staff_dept = fd.get('staff_dept') || '';
+  response.researcher_field = fd.get('researcher_field') || '';
+  response.other_identity = fd.get('other_identity') || '';
+
+  // Basic
+  response.field = fd.get('field') || '';
+  response.experience = fd.get('experience') || '';
+
+  // Awareness
+  response.discovery = fd.get('discovery') || '';
+  response.understanding = fd.get('understanding') || '';
+  response.frequency = fd.get('frequency') || '';
+  response.usecase = fd.getAll('usecase');
+
+  // Matrix ratings
+  var matrixFields = ['m_data_acq','m_data_clean','m_data_fusion','m_privacy',
+    'm_chronic','m_shap','m_trend','m_resource','m_charls',
+    'ux_visual','ux_nav','ux_charts','ux_mobile','ux_export','ux_perf'];
+  matrixFields.forEach(function(f){
+    response[f] = fd.get(f) || '';
+  });
+
+  // Overall
+  response.overall = fd.get('overall') || '';
+  response.recommend = fd.get('recommend') || '';
+
+  // Open feedback
+  response.feedback_value = fd.get('feedback_value') || '';
+  response.feedback_pain = fd.get('feedback_pain') || '';
+  response.feedback_future = fd.get('feedback_future') || '';
+  response.feedback_teaching = fd.get('feedback_teaching') || '';
+
+  // Features
+  response.features = fd.getAll('features');
+  response.features_other = fd.get('features_other') || '';
+
+  // Store
+  var responses = JSON.parse(localStorage.getItem('survey_responses') || '[]');
+  responses.push(response);
+  localStorage.setItem('survey_responses', JSON.stringify(responses));
+
+  // Show success
+  showToast('Survey submitted! Thank you for your feedback.', 'success');
+  document.getElementById('submitBtn').textContent = 'Submitted';
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitBtn').style.opacity = '0.6';
+  document.getElementById('submitBtn').style.pointerEvents = 'none';
+
+  // Show analysis plan
+  document.getElementById('analysisPlan').style.display = 'block';
+  document.getElementById('exportPanel').style.display = 'block';
+  document.getElementById('responseCount').textContent = responses.length + ' response(s) collected';
+
+  // Scroll to analysis plan
+  document.getElementById('analysisPlan').scrollIntoView({behavior:'smooth',block:'start'});
+
+  return false;
+}
+
+// ===== Export =====
+function exportJSON(){
+  var responses = JSON.parse(localStorage.getItem('survey_responses') || '[]');
+  if(!responses.length){showToast('No responses to export','error');return;}
+  var blob = new Blob([JSON.stringify(responses,null,2)],{type:'application/json'});
+  downloadBlob(blob,'survey_responses.json');
+  showToast('Exported '+responses.length+' responses as JSON','success');
+}
+
+function exportCSV(){
+  var responses = JSON.parse(localStorage.getItem('survey_responses') || '[]');
+  if(!responses.length){showToast('No responses to export','error');return;}
+
+  // Collect all keys
+  var keys = new Set();
+  responses.forEach(function(r){Object.keys(r).forEach(function(k){keys.add(k)})});
+  keys = Array.from(keys);
+
+  // Build CSV
+  var csv = keys.map(function(k){return '"'+k.replace(/"/g,'""')+'"'}).join(',') + '\n';
+  responses.forEach(function(r){
+    var row = keys.map(function(k){
+      var v = r[k] || '';
+      if(Array.isArray(v)) v = v.join('; ');
+      return '"'+String(v).replace(/"/g,'""')+'"';
+    }).join(',');
+    csv += row + '\n';
+  });
+
+  var blob = new Blob(['﻿'+csv],{type:'text/csv;charset=UTF-8'});
+  downloadBlob(blob,'survey_responses.csv');
+  showToast('Exported '+responses.length+' responses as CSV','success');
+}
+
+function clearResponses(){
+  if(confirm('Delete all collected responses? This cannot be undone.')){
+    localStorage.removeItem('survey_responses');
+    showToast('Responses cleared','error');
+    document.getElementById('responseCount').textContent = '0 responses';
+  }
+}
+
+function downloadBlob(blob, filename){
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+// ===== Toast =====
+function showToast(message, type){
+  var existing = document.querySelector('.toast');
+  if(existing) existing.remove();
+  var toast = document.createElement('div');
+  toast.className = 'toast toast-'+(type||'success');
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(function(){toast.remove()},3000);
+}
+
+// ===== Init =====
+document.addEventListener('DOMContentLoaded', function(){
+  // Show export panel if responses exist
+  var responses = JSON.parse(localStorage.getItem('survey_responses') || '[]');
+  if(responses.length){
+    document.getElementById('exportPanel').style.display = 'block';
+    document.getElementById('responseCount').textContent = responses.length + ' response(s) collected';
+    document.getElementById('analysisPlan').style.display = 'block';
+  }
+  updateProgress();
+});
+</script>
+</body>
+</html>
