@@ -498,7 +498,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
       <h4 style="margin:16px 0 8px;color:var(--primary-dark)">2. 描述性统计</h4>
       <ul style="padding-left:20px">
         <li><strong>人口统计：</strong> 身份类型柱状图 + 学科背景饼图</li>
-        <li><strong>Awareness:</strong> 发现渠道 × 身份 堆叠柱状图</li>
+        <li><strong>认知渠道：</strong>发现渠道 × 身份 堆叠柱状图</li>
         <li><strong>Frequency:</strong> 不同身份组的使用频率分布直方图</li>
       </ul>
 
@@ -660,7 +660,7 @@ function handleSubmit(event){
   response.field = fd.get('field') || '';
   response.experience = fd.get('experience') || '';
 
-  // Awareness
+  // 项目认知
   response.discovery = fd.get('discovery') || '';
   response.understanding = fd.get('understanding') || '';
   response.frequency = fd.get('frequency') || '';
